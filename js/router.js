@@ -8,12 +8,13 @@ import { renderizarPagina } from "./templates.js";
 const rotas = {
     "/": "index",
     "/index.html": "index",
-    "/projetos.html": "projetos",
-    "/cadastro.html": "cadastro",
-    "/sobre.html": "sobre",
-    "/inscricoes.html": "inscricoes",
-    "/voluntariado.html": "voluntariado",
-    "/doacoes.html": "doacoes"
+
+    "/html/projetos.html": "projetos",
+    "/html/cadastro.html": "cadastro",
+    "/html/inscricoes.html": "inscricoes",
+    "/html/voluntariado.html": "voluntariado",
+    "/html/sobre.html": "sobre",
+    "/html/doacoes.html": "doacoes"
 };
 
 
