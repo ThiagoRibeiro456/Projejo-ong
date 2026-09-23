@@ -1,7 +1,7 @@
-const imagemVoluntarios = "../img/voluntarios.webp";
-const imagemComunidade = "../img/projeto-1.webp";
-const imagemEducacao = "../img/projeto-2.webp";
-const imagemSustentabilidade = "../img/projeto-3.webp";
+const imagemVoluntarios = "/img/voluntarios.webp";
+const imagemComunidade = "/img/projeto-1.webp";
+const imagemEducacao = "/img/projeto-2.webp";
+const imagemSustentabilidade = "/img/projeto-3.webp";
 
 
 const templates = {
@@ -21,11 +21,11 @@ const templates = {
                 </p>
 
                 <div class="acoes">
-                    <a href="projetos.html" class="btn btn-primario">
+                    <a href="html/projetos.html" class="btn btn-primario">
                         Conheça nossos projetos
                     </a>
 
-                    <a href="cadastro.html" class="btn btn-secundario">
+                    <a href="html/cadastro.html" class="btn btn-secundario">
                         Quero participar
                     </a>
                 </div>
@@ -110,7 +110,7 @@ const templates = {
                             de vulnerabilidade.
                         </p>
 
-                        <a href="projetos.html">
+                        <a href="html/projetos.html">
                             Saiba mais
                         </a>
                     </div>
@@ -131,7 +131,7 @@ const templates = {
                             e ao desenvolvimento pessoal.
                         </p>
 
-                        <a href="projetos.html">
+                        <a href="html/projetos.html">
                             Saiba mais
                         </a>
                     </div>
@@ -152,7 +152,7 @@ const templates = {
                             e práticas sustentáveis.
                         </p>
 
-                        <a href="projetos.html">
+                        <a href="html/projetos.html">
                             Saiba mais
                         </a>
                     </div>
@@ -172,7 +172,7 @@ const templates = {
                 projetos e campanhas da nossa ONG.
             </p>
 
-            <a href="cadastro.html" class="btn btn-primario">
+            <a href="html/cadastro.html" class="btn btn-primario">
                 Quero participar
             </a>
         </section>
@@ -234,7 +234,7 @@ const templates = {
                         </p>
 
                         <div class="card-footer">
-                            <a href="cadastro.html" class="btn btn-primario">
+                            <a href="html/cadastro.html" class="btn btn-primario">
                                 Participar
                             </a>
                         </div>
@@ -261,7 +261,7 @@ const templates = {
                         </p>
 
                         <div class="card-footer">
-                            <a href="cadastro.html" class="btn btn-primario">
+                            <a href="html/cadastro.html" class="btn btn-primario">
                                 Participar
                             </a>
                         </div>
@@ -289,7 +289,7 @@ const templates = {
                         </p>
 
                         <div class="card-footer">
-                            <a href="cadastro.html" class="btn btn-primario">
+                            <a href="html/cadastro.html" class="btn btn-primario">
                                 Participar
                             </a>
                         </div>
@@ -310,7 +310,7 @@ const templates = {
                 com a nossa ONG.
             </p>
 
-            <a href="cadastro.html" class="btn btn-primario">
+            <a href="html/cadastro.html" class="btn btn-primario">
                 Quero ser voluntário
             </a>
         </section>
@@ -804,7 +804,7 @@ const templates = {
                 Escolha como você gostaria de participar.
             </p>
 
-            <a href="cadastro.html" class="btn btn-primario">
+            <a href="html/cadastro.html" class="btn btn-primario">
                 Quero participar
             </a>
         </section>
@@ -858,7 +858,7 @@ const templates = {
                     </p>
 
                     <a
-                        href="cadastro.html"
+                        href="html/cadastro.html"
                         class="btn btn-primario"
                     >
                         Quero participar
@@ -875,7 +875,7 @@ const templates = {
                     </p>
 
                     <a
-                        href="cadastro.html"
+                        href="html/cadastro.html"
                         class="btn btn-primario"
                     >
                         Quero participar
@@ -892,7 +892,7 @@ const templates = {
                     </p>
 
                     <a
-                        href="cadastro.html"
+                        href="html/cadastro.html"
                         class="btn btn-primario"
                     >
                         Quero participar
@@ -913,7 +913,7 @@ const templates = {
                 de voluntariado.
             </p>
 
-            <a href="cadastro.html" class="btn btn-primario">
+            <a href="html/cadastro.html" class="btn btn-primario">
                 Cadastrar-me
             </a>
         </section>
@@ -1046,7 +1046,7 @@ const templates = {
                 e oportunidades de participação.
             </p>
 
-            <a href="cadastro.html" class="btn btn-primario">
+            <a href="html/cadastro.html" class="btn btn-primario">
                 Quero participar
             </a>
         </section>
@@ -1097,7 +1097,7 @@ const templates = {
                     </p>
 
                     <a
-                        href="cadastro.html"
+                        href="html/cadastro.html"
                         class="btn btn-primario"
                     >
                         Fazer cadastro
@@ -1149,7 +1149,7 @@ export function renderizarPagina(pagina) {
                     </p>
 
                     <a
-                        href="index.html"
+                        href="html/index.html"
                         class="btn btn-primario"
                     >
                         Voltar para o início
