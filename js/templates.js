@@ -1,7 +1,16 @@
-const imagemVoluntarios = "/img/voluntarios.webp";
-const imagemComunidade = "/img/projeto-1.webp";
-const imagemEducacao = "/img/projeto-2.webp";
-const imagemSustentabilidade = "/img/projeto-3.webp";
+const BASE = new URL(".", window.location.href);
+
+const imagemVoluntarios =
+    new URL("img/voluntarios.webp", BASE).href;
+
+const imagemComunidade =
+    new URL("img/projeto-1.webp", BASE).href;
+
+const imagemEducacao =
+    new URL("img/projeto-2.webp", BASE).href;
+
+const imagemSustentabilidade =
+    new URL("img/projeto-3.webp", BASE).href;
 
 
 const templates = {
