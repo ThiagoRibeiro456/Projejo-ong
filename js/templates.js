@@ -1,4 +1,23 @@
-const BASE = new URL(".", window.location.href);
+/* =========================================
+   CAMINHO BASE DO PROJETO
+========================================= */
+
+/*
+    templates.js está dentro de:
+
+    /js/templates.js
+
+    ../ aponta para a raiz do projeto.
+
+    Funciona tanto localmente quanto no
+    GitHub Pages em uma subpasta.
+*/
+const BASE = new URL("../", import.meta.url);
+
+
+/* =========================================
+   CAMINHOS DAS IMAGENS
+========================================= */
 
 const imagemVoluntarios =
     new URL("img/voluntarios.webp", BASE).href;
@@ -13,12 +32,52 @@ const imagemSustentabilidade =
     new URL("img/projeto-3.webp", BASE).href;
 
 
+/* =========================================
+   CAMINHOS DAS PÁGINAS
+========================================= */
+
+const paginaInicio =
+    new URL("index.html", BASE).pathname;
+
+const paginaProjetos =
+    new URL("html/projetos.html", BASE).pathname;
+
+const paginaCadastro =
+    new URL("html/cadastro.html", BASE).pathname;
+
+const paginaInscricoes =
+    new URL("html/inscricoes.html", BASE).pathname;
+
+const paginaVoluntariado =
+    new URL("html/voluntariado.html", BASE).pathname;
+
+const paginaSobre =
+    new URL("html/sobre.html", BASE).pathname;
+
+const paginaDoacoes =
+    new URL("html/doacoes.html", BASE).pathname;
+
+
+/* =========================================
+   TEMPLATES
+========================================= */
+
 const templates = {
 
+    /* =====================================
+       INÍCIO
+    ===================================== */
+
     index: `
-        <section class="hero" aria-labelledby="titulo-principal">
+        <section
+            class="hero"
+            aria-labelledby="titulo-principal"
+        >
             <div class="hero-conteudo">
-                <span class="badge">Juntos por um futuro melhor</span>
+
+                <span class="badge">
+                    Juntos por um futuro melhor
+                </span>
 
                 <h1 id="titulo-principal">
                     Pequenas ações podem transformar grandes histórias
@@ -30,28 +89,47 @@ const templates = {
                 </p>
 
                 <div class="acoes">
-                    <a href="html/projetos.html" class="btn btn-primario">
+
+                    <a
+                        href="${paginaProjetos}"
+                        class="btn btn-primario"
+                    >
                         Conheça nossos projetos
                     </a>
 
-                    <a href="html/cadastro.html" class="btn btn-secundario">
+                    <a
+                        href="${paginaCadastro}"
+                        class="btn btn-secundario"
+                    >
                         Quero participar
                     </a>
+
                 </div>
+
             </div>
 
+
             <div class="hero-imagem">
+
                 <img
                     src="${imagemVoluntarios}"
                     alt="Voluntários participando de uma ação de apoio à comunidade"
                 >
+
             </div>
         </section>
 
 
-        <section class="sobre" aria-labelledby="titulo-sobre">
+        <section
+            class="sobre"
+            aria-labelledby="titulo-sobre"
+        >
+
             <div class="section-titulo">
-                <span class="badge">Sobre a ONG</span>
+
+                <span class="badge">
+                    Sobre a ONG
+                </span>
 
                 <h2 id="titulo-sobre">
                     Unidos podemos fazer a diferença
@@ -61,117 +139,171 @@ const templates = {
                     Nosso objetivo é aproximar pessoas que desejam ajudar
                     de iniciativas que precisam de apoio.
                 </p>
+
             </div>
 
+
             <div class="cards">
+
                 <article class="card">
-                    <h3>Projetos sociais</h3>
+
+                    <h3>
+                        Projetos sociais
+                    </h3>
 
                     <p>
                         Desenvolvemos iniciativas voltadas para diferentes
                         necessidades da comunidade.
                     </p>
+
                 </article>
 
+
                 <article class="card">
-                    <h3>Voluntariado</h3>
+
+                    <h3>
+                        Voluntariado
+                    </h3>
 
                     <p>
                         Incentivamos a participação de voluntários em ações
                         que geram impacto social.
                     </p>
+
                 </article>
 
+
                 <article class="card">
-                    <h3>Doações</h3>
+
+                    <h3>
+                        Doações
+                    </h3>
 
                     <p>
                         Facilitamos o apoio a projetos através de campanhas
                         e contribuições.
                     </p>
+
                 </article>
+
             </div>
+
         </section>
 
 
-        <section class="projetos-destaque" aria-labelledby="titulo-projetos">
+        <section
+            class="projetos-destaque"
+            aria-labelledby="titulo-projetos"
+        >
+
             <div class="section-titulo">
-                <span class="badge">Nossas iniciativas</span>
+
+                <span class="badge">
+                    Nossas iniciativas
+                </span>
 
                 <h2 id="titulo-projetos">
                     Projetos que fazem a diferença
                 </h2>
+
             </div>
+
 
             <div class="projetos-grid">
 
                 <article class="card-projeto">
+
                     <img
                         src="${imagemComunidade}"
                         alt="Voluntários organizando doações para a comunidade"
+                        loading="lazy"
                     >
 
                     <div class="card-conteudo">
-                        <h3>Apoio à comunidade</h3>
+
+                        <h3>
+                            Apoio à comunidade
+                        </h3>
 
                         <p>
                             Ações para apoiar famílias e pessoas em situação
                             de vulnerabilidade.
                         </p>
 
-                        <a href="html/projetos.html">
+                        <a href="${paginaProjetos}">
                             Saiba mais
                         </a>
+
                     </div>
+
                 </article>
 
 
                 <article class="card-projeto">
+
                     <img
                         src="${imagemEducacao}"
                         alt="Crianças estudando em uma sala de aula"
+                        loading="lazy"
                     >
 
                     <div class="card-conteudo">
-                        <h3>Educação</h3>
+
+                        <h3>
+                            Educação
+                        </h3>
 
                         <p>
                             Projetos que incentivam o acesso à educação
                             e ao desenvolvimento pessoal.
                         </p>
 
-                        <a href="html/projetos.html">
+                        <a href="${paginaProjetos}">
                             Saiba mais
                         </a>
+
                     </div>
+
                 </article>
 
 
                 <article class="card-projeto">
+
                     <img
                         src="${imagemSustentabilidade}"
                         alt="Voluntários separando materiais para reciclagem"
+                        loading="lazy"
                     >
 
                     <div class="card-conteudo">
-                        <h3>Sustentabilidade</h3>
+
+                        <h3>
+                            Sustentabilidade
+                        </h3>
 
                         <p>
                             Iniciativas para promover consciência ambiental
                             e práticas sustentáveis.
                         </p>
 
-                        <a href="html/projetos.html">
+                        <a href="${paginaProjetos}">
                             Saiba mais
                         </a>
+
                     </div>
+
                 </article>
 
             </div>
+
         </section>
 
 
-        <section class="chamada" aria-labelledby="titulo-chamada">
+        <section
+            class="chamada"
+            aria-labelledby="titulo-chamada"
+        >
+
             <h2 id="titulo-chamada">
                 Faça parte dessa transformação
             </h2>
@@ -181,20 +313,32 @@ const templates = {
                 projetos e campanhas da nossa ONG.
             </p>
 
-            <a href="html/cadastro.html" class="btn btn-primario">
+            <a
+                href="${paginaCadastro}"
+                class="btn btn-primario"
+            >
                 Quero participar
             </a>
+
         </section>
     `,
 
+
+    /* =====================================
+       PROJETOS
+    ===================================== */
 
     projetos: `
         <section
             class="hero hero-menor"
             aria-labelledby="titulo-projetos"
         >
+
             <div class="hero-conteudo">
-                <span class="badge">Nossas iniciativas</span>
+
+                <span class="badge">
+                    Nossas iniciativas
+                </span>
 
                 <h1 id="titulo-projetos">
                     Projetos que transformam vidas
@@ -204,12 +348,19 @@ const templates = {
                     Conheça as iniciativas da Juntos e descubra como
                     você pode contribuir para cada uma delas.
                 </p>
+
             </div>
+
         </section>
 
 
-        <section class="projetos" aria-labelledby="titulo-iniciativas">
+        <section
+            class="projetos"
+            aria-labelledby="titulo-iniciativas"
+        >
+
             <div class="section-titulo">
+
                 <h2 id="titulo-iniciativas">
                     Nossos projetos
                 </h2>
@@ -218,19 +369,24 @@ const templates = {
                     Cada projeto é desenvolvido para atender necessidades
                     reais da comunidade.
                 </p>
+
             </div>
 
 
             <div class="projetos-grid">
 
                 <article class="card-projeto">
+
                     <img
                         src="${imagemComunidade}"
                         alt="Voluntários organizando doações para a comunidade"
                     >
 
                     <div class="card-conteudo">
-                        <span class="badge">Comunidade</span>
+
+                        <span class="badge">
+                            Comunidade
+                        </span>
 
                         <h3>
                             Apoio à comunidade
@@ -243,22 +399,33 @@ const templates = {
                         </p>
 
                         <div class="card-footer">
-                            <a href="html/cadastro.html" class="btn btn-primario">
+
+                            <a
+                                href="${paginaCadastro}"
+                                class="btn btn-primario"
+                            >
                                 Participar
                             </a>
+
                         </div>
+
                     </div>
+
                 </article>
 
 
                 <article class="card-projeto">
+
                     <img
                         src="${imagemEducacao}"
                         alt="Crianças estudando em uma sala de aula"
                     >
 
                     <div class="card-conteudo">
-                        <span class="badge">Educação</span>
+
+                        <span class="badge">
+                            Educação
+                        </span>
 
                         <h3>
                             Educação para todos
@@ -270,22 +437,33 @@ const templates = {
                         </p>
 
                         <div class="card-footer">
-                            <a href="html/cadastro.html" class="btn btn-primario">
+
+                            <a
+                                href="${paginaCadastro}"
+                                class="btn btn-primario"
+                            >
                                 Participar
                             </a>
+
                         </div>
+
                     </div>
+
                 </article>
 
 
                 <article class="card-projeto">
+
                     <img
                         src="${imagemSustentabilidade}"
                         alt="Voluntários separando materiais para reciclagem"
                     >
 
                     <div class="card-conteudo">
-                        <span class="badge">Sustentabilidade</span>
+
+                        <span class="badge">
+                            Sustentabilidade
+                        </span>
 
                         <h3>
                             Comunidade sustentável
@@ -298,18 +476,30 @@ const templates = {
                         </p>
 
                         <div class="card-footer">
-                            <a href="html/cadastro.html" class="btn btn-primario">
+
+                            <a
+                                href="${paginaCadastro}"
+                                class="btn btn-primario"
+                            >
                                 Participar
                             </a>
+
                         </div>
+
                     </div>
+
                 </article>
 
             </div>
+
         </section>
 
 
-        <section class="chamada" aria-labelledby="titulo-voluntario">
+        <section
+            class="chamada"
+            aria-labelledby="titulo-voluntario"
+        >
+
             <h2 id="titulo-voluntario">
                 Quer ajudar a transformar essas iniciativas?
             </h2>
@@ -319,20 +509,32 @@ const templates = {
                 com a nossa ONG.
             </p>
 
-            <a href="html/cadastro.html" class="btn btn-primario">
+            <a
+                href="${paginaCadastro}"
+                class="btn btn-primario"
+            >
                 Quero ser voluntário
             </a>
+
         </section>
     `,
 
+
+    /* =====================================
+       CADASTRO
+    ===================================== */
 
     cadastro: `
         <section
             class="hero hero-menor"
             aria-labelledby="titulo-cadastro"
         >
+
             <div class="hero-conteudo">
-                <span class="badge">Faça parte</span>
+
+                <span class="badge">
+                    Faça parte
+                </span>
 
                 <h1 id="titulo-cadastro">
                     Cadastre-se para participar
@@ -342,7 +544,9 @@ const templates = {
                     Preencha o formulário para demonstrar interesse
                     em nossos projetos e ações.
                 </p>
+
             </div>
+
         </section>
 
 
@@ -350,7 +554,9 @@ const templates = {
             class="formulario-section"
             aria-labelledby="titulo-formulario"
         >
+
             <div class="section-titulo">
+
                 <h2 id="titulo-formulario">
                     Formulário de cadastro
                 </h2>
@@ -358,6 +564,7 @@ const templates = {
                 <p>
                     Os campos marcados com * são obrigatórios.
                 </p>
+
             </div>
 
 
@@ -368,9 +575,14 @@ const templates = {
             >
 
                 <fieldset>
-                    <legend>Dados pessoais</legend>
+
+                    <legend>
+                        Dados pessoais
+                    </legend>
+
 
                     <div class="campo">
+
                         <label for="nome">
                             Nome completo *
                         </label>
@@ -390,10 +602,12 @@ const templates = {
                             id="erro-nome"
                             aria-live="polite"
                         ></span>
+
                     </div>
 
 
                     <div class="campo">
+
                         <label for="email">
                             E-mail *
                         </label>
@@ -412,10 +626,12 @@ const templates = {
                             id="erro-email"
                             aria-live="polite"
                         ></span>
+
                     </div>
 
 
                     <div class="campo">
+
                         <label for="data-nascimento">
                             Data de nascimento *
                         </label>
@@ -433,10 +649,12 @@ const templates = {
                             id="erro-data-nascimento"
                             aria-live="polite"
                         ></span>
+
                     </div>
 
 
                     <div class="campo">
+
                         <label for="cpf">
                             CPF *
                         </label>
@@ -457,10 +675,12 @@ const templates = {
                             id="erro-cpf"
                             aria-live="polite"
                         ></span>
+
                     </div>
 
 
                     <div class="campo">
+
                         <label for="telefone">
                             Telefone *
                         </label>
@@ -482,14 +702,21 @@ const templates = {
                             id="erro-telefone"
                             aria-live="polite"
                         ></span>
+
                     </div>
+
                 </fieldset>
 
 
                 <fieldset>
-                    <legend>Endereço</legend>
+
+                    <legend>
+                        Endereço
+                    </legend>
+
 
                     <div class="campo">
+
                         <label for="endereco">
                             Endereço *
                         </label>
@@ -509,10 +736,12 @@ const templates = {
                             id="erro-endereco"
                             aria-live="polite"
                         ></span>
+
                     </div>
 
 
                     <div class="campo">
+
                         <label for="cep">
                             CEP *
                         </label>
@@ -534,10 +763,12 @@ const templates = {
                             id="erro-cep"
                             aria-live="polite"
                         ></span>
+
                     </div>
 
 
                     <div class="campo">
+
                         <label for="cidade">
                             Cidade *
                         </label>
@@ -556,10 +787,12 @@ const templates = {
                             id="erro-cidade"
                             aria-live="polite"
                         ></span>
+
                     </div>
 
 
                     <div class="campo">
+
                         <label for="estado">
                             Estado *
                         </label>
@@ -570,6 +803,7 @@ const templates = {
                             autocomplete="address-level1"
                             required
                         >
+
                             <option value="">
                                 Selecione o estado
                             </option>
@@ -601,6 +835,7 @@ const templates = {
                             <option value="SP">São Paulo</option>
                             <option value="SE">Sergipe</option>
                             <option value="TO">Tocantins</option>
+
                         </select>
 
                         <span
@@ -608,14 +843,21 @@ const templates = {
                             id="erro-estado"
                             aria-live="polite"
                         ></span>
+
                     </div>
+
                 </fieldset>
 
 
                 <fieldset>
-                    <legend>Participação</legend>
+
+                    <legend>
+                        Participação
+                    </legend>
+
 
                     <div class="campo">
+
                         <label for="interesse">
                             Área de interesse *
                         </label>
@@ -625,6 +867,7 @@ const templates = {
                             name="interesse"
                             required
                         >
+
                             <option value="">
                                 Selecione uma opção
                             </option>
@@ -640,11 +883,14 @@ const templates = {
                             <option value="projetos">
                                 Participação em projetos
                             </option>
+
                         </select>
+
                     </div>
 
 
                     <div class="campo">
+
                         <label for="mensagem">
                             Mensagem
                         </label>
@@ -655,7 +901,9 @@ const templates = {
                             rows="5"
                             placeholder="Conte-nos como gostaria de ajudar..."
                         ></textarea>
+
                     </div>
+
                 </fieldset>
 
 
@@ -667,6 +915,7 @@ const templates = {
 
 
                 <div class="acoes-formulario">
+
                     <button
                         type="submit"
                         class="btn btn-primario"
@@ -680,20 +929,30 @@ const templates = {
                     >
                         Limpar
                     </button>
+
                 </div>
 
             </form>
+
         </section>
     `,
 
+
+    /* =====================================
+       SOBRE
+    ===================================== */
 
     sobre: `
         <section
             class="hero hero-menor"
             aria-labelledby="titulo-sobre"
         >
+
             <div class="hero-conteudo">
-                <span class="badge">Sobre nós</span>
+
+                <span class="badge">
+                    Sobre nós
+                </span>
 
                 <h1 id="titulo-sobre">
                     Unidos por uma causa
@@ -703,13 +962,22 @@ const templates = {
                     Conheça a Juntos e nosso propósito de aproximar
                     pessoas de iniciativas que geram impacto social.
                 </p>
+
             </div>
+
         </section>
 
 
-        <section class="sobre" aria-labelledby="titulo-historia">
+        <section
+            class="sobre"
+            aria-labelledby="titulo-historia"
+        >
+
             <div class="section-titulo">
-                <span class="badge">Nossa história</span>
+
+                <span class="badge">
+                    Nossa história
+                </span>
 
                 <h2 id="titulo-historia">
                     Construindo oportunidades juntos
@@ -719,91 +987,130 @@ const templates = {
                     A Juntos nasceu com a missão de conectar pessoas
                     dispostas a ajudar com projetos que precisam de apoio.
                 </p>
+
             </div>
 
 
             <div class="cards">
 
                 <article class="card">
-                    <h3>Missão</h3>
+
+                    <h3>
+                        Missão
+                    </h3>
 
                     <p>
                         Conectar pessoas e organizações para promover
                         ações que contribuam para uma sociedade mais
                         solidária e participativa.
                     </p>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Visão</h3>
+
+                    <h3>
+                        Visão
+                    </h3>
 
                     <p>
                         Ser uma plataforma de referência para participação
                         social, voluntariado e apoio a projetos comunitários.
                     </p>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Valores</h3>
+
+                    <h3>
+                        Valores
+                    </h3>
 
                     <p>
                         Solidariedade, respeito, transparência,
                         responsabilidade e colaboração.
                     </p>
+
                 </article>
 
             </div>
+
         </section>
 
 
-        <section class="projetos-destaque" aria-labelledby="titulo-atuacao">
+        <section
+            class="projetos-destaque"
+            aria-labelledby="titulo-atuacao"
+        >
+
             <div class="section-titulo">
-                <span class="badge">Nossa atuação</span>
+
+                <span class="badge">
+                    Nossa atuação
+                </span>
 
                 <h2 id="titulo-atuacao">
                     Áreas em que trabalhamos
                 </h2>
+
             </div>
 
 
             <div class="cards">
 
                 <article class="card">
-                    <h3>Comunidade</h3>
+
+                    <h3>
+                        Comunidade
+                    </h3>
 
                     <p>
                         Apoio a famílias e pessoas que precisam
                         de oportunidades e recursos.
                     </p>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Educação</h3>
+
+                    <h3>
+                        Educação
+                    </h3>
 
                     <p>
                         Incentivo ao aprendizado e ao desenvolvimento
                         de crianças, jovens e adultos.
                     </p>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Sustentabilidade</h3>
+
+                    <h3>
+                        Sustentabilidade
+                    </h3>
 
                     <p>
                         Ações de conscientização e preservação
                         do meio ambiente.
                     </p>
+
                 </article>
 
             </div>
+
         </section>
 
 
-        <section class="chamada" aria-labelledby="titulo-sobre-chamada">
+        <section
+            class="chamada"
+            aria-labelledby="titulo-sobre-chamada"
+        >
+
             <h2 id="titulo-sobre-chamada">
                 Faça parte da Juntos
             </h2>
@@ -813,20 +1120,32 @@ const templates = {
                 Escolha como você gostaria de participar.
             </p>
 
-            <a href="html/cadastro.html" class="btn btn-primario">
+            <a
+                href="${paginaCadastro}"
+                class="btn btn-primario"
+            >
                 Quero participar
             </a>
+
         </section>
     `,
 
+
+    /* =====================================
+       VOLUNTARIADO
+    ===================================== */
 
     voluntariado: `
         <section
             class="hero hero-menor"
             aria-labelledby="titulo-voluntariado"
         >
+
             <div class="hero-conteudo">
-                <span class="badge">Voluntariado</span>
+
+                <span class="badge">
+                    Voluntariado
+                </span>
 
                 <h1 id="titulo-voluntariado">
                     Faça a diferença como voluntário
@@ -836,7 +1155,9 @@ const templates = {
                     Doe seu tempo, seus conhecimentos e suas habilidades
                     para contribuir com projetos que transformam vidas.
                 </p>
+
             </div>
+
         </section>
 
 
@@ -844,7 +1165,9 @@ const templates = {
             class="projetos"
             aria-labelledby="titulo-formas-ajudar"
         >
+
             <div class="section-titulo">
+
                 <h2 id="titulo-formas-ajudar">
                     Encontre uma forma de ajudar
                 </h2>
@@ -853,13 +1176,17 @@ const templates = {
                     Você pode participar de diferentes áreas
                     de atuação da Juntos.
                 </p>
+
             </div>
 
 
             <div class="cards">
 
                 <article class="card">
-                    <h3>Apoio à comunidade</h3>
+
+                    <h3>
+                        Apoio à comunidade
+                    </h3>
 
                     <p>
                         Ajude na organização e distribuição de recursos
@@ -867,16 +1194,20 @@ const templates = {
                     </p>
 
                     <a
-                        href="html/cadastro.html"
+                        href="${paginaCadastro}"
                         class="btn btn-primario"
                     >
                         Quero participar
                     </a>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Educação</h3>
+
+                    <h3>
+                        Educação
+                    </h3>
 
                     <p>
                         Contribua com oficinas, atividades educativas
@@ -884,16 +1215,20 @@ const templates = {
                     </p>
 
                     <a
-                        href="html/cadastro.html"
+                        href="${paginaCadastro}"
                         class="btn btn-primario"
                     >
                         Quero participar
                     </a>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Sustentabilidade</h3>
+
+                    <h3>
+                        Sustentabilidade
+                    </h3>
 
                     <p>
                         Participe de ações de reciclagem, educação
@@ -901,18 +1236,24 @@ const templates = {
                     </p>
 
                     <a
-                        href="html/cadastro.html"
+                        href="${paginaCadastro}"
                         class="btn btn-primario"
                     >
                         Quero participar
                     </a>
+
                 </article>
 
             </div>
+
         </section>
 
 
-        <section class="chamada" aria-labelledby="titulo-voluntariado-chamada">
+        <section
+            class="chamada"
+            aria-labelledby="titulo-voluntariado-chamada"
+        >
+
             <h2 id="titulo-voluntariado-chamada">
                 Pronto para ajudar?
             </h2>
@@ -922,20 +1263,32 @@ const templates = {
                 de voluntariado.
             </p>
 
-            <a href="html/cadastro.html" class="btn btn-primario">
+            <a
+                href="${paginaCadastro}"
+                class="btn btn-primario"
+            >
                 Cadastrar-me
             </a>
+
         </section>
     `,
 
+
+    /* =====================================
+       DOAÇÕES
+    ===================================== */
 
     doacoes: `
         <section
             class="hero hero-menor"
             aria-labelledby="titulo-doacoes"
         >
+
             <div class="hero-conteudo">
-                <span class="badge">Doações</span>
+
+                <span class="badge">
+                    Doações
+                </span>
 
                 <h1 id="titulo-doacoes">
                     Sua contribuição pode transformar vidas
@@ -945,12 +1298,19 @@ const templates = {
                     Toda contribuição pode ajudar a manter projetos
                     e ampliar o impacto das nossas ações.
                 </p>
+
             </div>
+
         </section>
 
 
-        <section class="projetos" aria-labelledby="titulo-formas-doar">
+        <section
+            class="projetos"
+            aria-labelledby="titulo-formas-doar"
+        >
+
             <div class="section-titulo">
+
                 <h2 id="titulo-formas-doar">
                     Formas de contribuir
                 </h2>
@@ -959,41 +1319,55 @@ const templates = {
                     Existem diferentes maneiras de apoiar
                     as iniciativas da Juntos.
                 </p>
+
             </div>
 
 
             <div class="cards">
 
                 <article class="card">
-                    <h3>Doação financeira</h3>
+
+                    <h3>
+                        Doação financeira
+                    </h3>
 
                     <p>
                         Contribuições financeiras podem ajudar na
                         manutenção das ações e campanhas sociais.
                     </p>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Doação de materiais</h3>
+
+                    <h3>
+                        Doação de materiais
+                    </h3>
 
                     <p>
                         Materiais e itens essenciais podem ser
                         direcionados para famílias e projetos.
                     </p>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Compartilhe</h3>
+
+                    <h3>
+                        Compartilhe
+                    </h3>
 
                     <p>
                         Divulgue nossos projetos e ajude a aproximar
                         novas pessoas da causa.
                     </p>
+
                 </article>
 
             </div>
+
         </section>
 
 
@@ -1001,51 +1375,73 @@ const templates = {
             class="projetos-destaque"
             aria-labelledby="titulo-destino"
         >
+
             <div class="section-titulo">
-                <span class="badge">Impacto</span>
+
+                <span class="badge">
+                    Impacto
+                </span>
 
                 <h2 id="titulo-destino">
                     Para onde sua contribuição pode ir
                 </h2>
+
             </div>
 
 
             <div class="cards">
 
                 <article class="card">
-                    <h3>Apoio à comunidade</h3>
+
+                    <h3>
+                        Apoio à comunidade
+                    </h3>
 
                     <p>
                         Apoio a campanhas e ações destinadas
                         a pessoas em situação de vulnerabilidade.
                     </p>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Educação</h3>
+
+                    <h3>
+                        Educação
+                    </h3>
 
                     <p>
                         Recursos destinados a atividades,
                         oficinas e ações de aprendizagem.
                     </p>
+
                 </article>
 
 
                 <article class="card">
-                    <h3>Sustentabilidade</h3>
+
+                    <h3>
+                        Sustentabilidade
+                    </h3>
 
                     <p>
                         Apoio a iniciativas de educação ambiental,
                         reciclagem e preservação.
                     </p>
+
                 </article>
 
             </div>
+
         </section>
 
 
-        <section class="chamada" aria-labelledby="titulo-doacao-chamada">
+        <section
+            class="chamada"
+            aria-labelledby="titulo-doacao-chamada"
+        >
+
             <h2 id="titulo-doacao-chamada">
                 Quer contribuir com a Juntos?
             </h2>
@@ -1055,20 +1451,32 @@ const templates = {
                 e oportunidades de participação.
             </p>
 
-            <a href="html/cadastro.html" class="btn btn-primario">
+            <a
+                href="${paginaCadastro}"
+                class="btn btn-primario"
+            >
                 Quero participar
             </a>
+
         </section>
     `,
 
+
+    /* =====================================
+       INSCRIÇÕES
+    ===================================== */
 
     inscricoes: `
         <section
             class="hero hero-menor"
             aria-labelledby="titulo-inscricoes"
         >
+
             <div class="hero-conteudo">
-                <span class="badge">Minhas inscrições</span>
+
+                <span class="badge">
+                    Minhas inscrições
+                </span>
 
                 <h1 id="titulo-inscricoes">
                     Minhas inscrições
@@ -1077,7 +1485,9 @@ const templates = {
                 <p>
                     Consulte os cadastros realizados neste navegador.
                 </p>
+
             </div>
+
         </section>
 
 
@@ -1085,7 +1495,9 @@ const templates = {
             class="projetos"
             aria-labelledby="titulo-lista-inscricoes"
         >
+
             <div class="section-titulo">
+
                 <h2 id="titulo-lista-inscricoes">
                     Inscrições realizadas
                 </h2>
@@ -1094,28 +1506,36 @@ const templates = {
                     Os dados são armazenados localmente no navegador
                     usando localStorage.
                 </p>
+
             </div>
 
 
             <div id="lista-inscricoes">
+
                 <article class="card">
-                    <h3>Nenhuma inscrição encontrada</h3>
+
+                    <h3>
+                        Nenhuma inscrição encontrada
+                    </h3>
 
                     <p>
                         Ainda não existem inscrições salvas neste navegador.
                     </p>
 
                     <a
-                        href="html/cadastro.html"
+                        href="${paginaCadastro}"
                         class="btn btn-primario"
                     >
                         Fazer cadastro
                     </a>
+
                 </article>
+
             </div>
 
 
             <div class="acoes-formulario">
+
                 <button
                     type="button"
                     id="limpar-inscricoes"
@@ -1123,20 +1543,35 @@ const templates = {
                 >
                     Limpar inscrições
                 </button>
+
             </div>
+
         </section>
     `
 };
 
 
+/* =========================================
+   RENDERIZAÇÃO
+========================================= */
+
 export function renderizarPagina(pagina) {
 
     const main = document.querySelector("main");
 
+
     if (!main) {
+        console.error(
+            "Elemento <main> não encontrado."
+        );
+
         return;
     }
 
+
+    /* =====================================
+       PÁGINA NÃO ENCONTRADA
+    ===================================== */
 
     if (!templates[pagina]) {
 
@@ -1145,8 +1580,12 @@ export function renderizarPagina(pagina) {
                 class="hero hero-menor"
                 aria-labelledby="titulo-erro"
             >
+
                 <div class="hero-conteudo">
-                    <span class="badge">Erro</span>
+
+                    <span class="badge">
+                        Erro
+                    </span>
 
                     <h1 id="titulo-erro">
                         Página não encontrada
@@ -1158,12 +1597,14 @@ export function renderizarPagina(pagina) {
                     </p>
 
                     <a
-                        href="html/index.html"
+                        href="${paginaInicio}"
                         class="btn btn-primario"
                     >
                         Voltar para o início
                     </a>
+
                 </div>
+
             </section>
         `;
 
@@ -1176,8 +1617,16 @@ export function renderizarPagina(pagina) {
     }
 
 
+    /* =====================================
+       RENDERIZAÇÃO DA PÁGINA
+    ===================================== */
+
     main.innerHTML = templates[pagina];
 
+
+    /* =====================================
+       VOLTA PARA O TOPO
+    ===================================== */
 
     window.scrollTo({
         top: 0,
