@@ -6,19 +6,19 @@ import { renderizarPagina } from "./templates.js";
 ========================================= */
 
 /*
-    O arquivo está em:
+    router.js está em:
 
-    js/router.js
+    /js/router.js
 
-    ../ aponta para a raiz do projeto.
+    Portanto, ../ aponta para a raiz
+    do projeto.
 
-    Em um GitHub Pages como:
+    Exemplo no GitHub Pages:
 
-    https://usuario.github.io/juntos/
+    https://usuario.github.io/Projeto-ong/
 
-    o BASE_PATH será:
-
-    /juntos
+    BASE_PATH:
+    /Projeto-ong
 */
 const BASE_PATH = new URL("../", import.meta.url)
     .pathname
@@ -29,6 +29,10 @@ const BASE_PATH = new URL("../", import.meta.url)
    FUNÇÕES AUXILIARES
 ========================================= */
 
+/*
+    Cria uma URL interna a partir da raiz
+    do projeto.
+*/
 function criarCaminho(caminho = "/") {
 
     if (!caminho.startsWith("/")) {
@@ -40,8 +44,7 @@ function criarCaminho(caminho = "/") {
 
 
 /*
-    Remove barras extras e trata a raiz
-    do projeto corretamente.
+    Normaliza um caminho para comparação.
 */
 function normalizarCaminho(caminho) {
 
@@ -50,27 +53,28 @@ function normalizarCaminho(caminho) {
     }
 
 
+    /*
+        Remove a barra final.
+    */
     if (
-        BASE_PATH &&
-        (
-            caminho === BASE_PATH ||
-            caminho === `${BASE_PATH}/`
-        )
+        caminho.length > 1 &&
+        caminho.endsWith("/")
     ) {
-        return BASE_PATH || "/";
+        caminho = caminho.replace(
+            /\/+$/,
+            ""
+        );
     }
 
 
     /*
-        Remove barra final.
-
-        Exemplo:
-        /juntos/html/projetos.html/
-        ->
-        /juntos/html/projetos.html
+        Trata a raiz do projeto.
     */
-    if (caminho.length > 1) {
-        caminho = caminho.replace(/\/+$/, "");
+    if (
+        BASE_PATH &&
+        caminho === `${BASE_PATH}/`
+    ) {
+        return BASE_PATH;
     }
 
 
@@ -79,13 +83,39 @@ function normalizarCaminho(caminho) {
 
 
 /*
-    Retorna apenas o caminho da URL,
-    removendo query string e hash.
+    Extrai somente o pathname da URL.
+
+    Query string e hash não são usados
+    para identificar a rota.
 */
 function obterCaminho(url) {
 
     return normalizarCaminho(
         url.pathname
+    );
+}
+
+
+/*
+    Verifica se uma URL pertence
+    ao projeto atual.
+*/
+function pertenceAoProjeto(url) {
+
+    const caminho =
+        normalizarCaminho(
+            url.pathname
+        );
+
+
+    return (
+        url.origin === window.location.origin &&
+        (
+            caminho === BASE_PATH ||
+            caminho.startsWith(
+                `${BASE_PATH}/`
+            )
+        )
     );
 }
 
@@ -96,10 +126,7 @@ function obterCaminho(url) {
 
 const rotas = {
 
-    /* -------------------------------------
-       Página inicial
-    ------------------------------------- */
-
+    /* Página inicial */
     [normalizarCaminho(
         criarCaminho("/")
     )]: "index",
@@ -109,30 +136,37 @@ const rotas = {
     )]: "index",
 
 
-    /* -------------------------------------
-       Páginas principais
-    ------------------------------------- */
-
+    /* Projetos */
     [normalizarCaminho(
         criarCaminho("/html/projetos.html")
     )]: "projetos",
 
+
+    /* Cadastro */
     [normalizarCaminho(
         criarCaminho("/html/cadastro.html")
     )]: "cadastro",
 
+
+    /* Inscrições */
     [normalizarCaminho(
         criarCaminho("/html/inscricoes.html")
     )]: "inscricoes",
 
+
+    /* Voluntariado */
     [normalizarCaminho(
         criarCaminho("/html/voluntariado.html")
     )]: "voluntariado",
 
+
+    /* Sobre */
     [normalizarCaminho(
         criarCaminho("/html/sobre.html")
     )]: "sobre",
 
+
+    /* Doações */
     [normalizarCaminho(
         criarCaminho("/html/doacoes.html")
     )]: "doacoes"
@@ -145,7 +179,8 @@ const rotas = {
 
 const caminhosCanonicos = {
 
-    index: criarCaminho("/"),
+    index:
+        criarCaminho("/"),
 
     projetos:
         criarCaminho(
@@ -185,17 +220,31 @@ const caminhosCanonicos = {
 
 export function iniciarRouter() {
 
+    /*
+        Evita registrar o router mais de uma vez.
+    */
+    if (
+        document.body.dataset.routerIniciado ===
+        "true"
+    ) {
+        return;
+    }
 
-    /* -------------------------------------
-       Navegação por links
-    ------------------------------------- */
+
+    document.body.dataset.routerIniciado =
+        "true";
+
+
+    /* =====================================
+       NAVEGAÇÃO POR LINKS
+    ===================================== */
 
     document.addEventListener(
         "click",
         (evento) => {
 
             /*
-                Apenas cliques normais do botão esquerdo.
+                Apenas clique normal do botão esquerdo.
             */
             if (
                 evento.defaultPrevented ||
@@ -219,12 +268,21 @@ export function iniciarRouter() {
 
 
             /*
-                Links destinados a outras abas
-                ou downloads não são interceptados.
+                Não intercepta downloads.
             */
             if (
-                link.target === "_blank" ||
                 link.hasAttribute("download")
+            ) {
+                return;
+            }
+
+
+            /*
+                Não intercepta links para
+                novas abas/janelas.
+            */
+            if (
+                link.target === "_blank"
             ) {
                 return;
             }
@@ -238,12 +296,11 @@ export function iniciarRouter() {
 
 
             /*
-                Links externos continuam
-                funcionando normalmente.
+                Ignora links externos ou
+                URLs fora do projeto.
             */
             if (
-                url.origin !==
-                window.location.origin
+                !pertenceAoProjeto(url)
             ) {
                 return;
             }
@@ -254,10 +311,13 @@ export function iniciarRouter() {
 
 
             /*
-                Verifica se a URL pertence
-                ao sistema de rotas.
+                Verifica se a rota existe.
             */
-            if (!rotas[caminho]) {
+            const pagina =
+                rotas[caminho];
+
+
+            if (!pagina) {
                 return;
             }
 
@@ -265,24 +325,22 @@ export function iniciarRouter() {
             evento.preventDefault();
 
 
-            const pagina =
-                rotas[caminho];
-
-
             const caminhoCanonico =
                 caminhosCanonicos[pagina];
 
 
             navegar(
-                caminhoCanonico
+                caminhoCanonico,
+                url.search,
+                url.hash
             );
         }
     );
 
 
-    /* -------------------------------------
-       Botões voltar / avançar
-    ------------------------------------- */
+    /* =====================================
+       VOLTAR / AVANÇAR
+    ===================================== */
 
     window.addEventListener(
         "popstate",
@@ -295,9 +353,9 @@ export function iniciarRouter() {
     );
 
 
-    /* -------------------------------------
-       Carregamento inicial
-    ------------------------------------- */
+    /* =====================================
+       CARREGAMENTO INICIAL
+    ===================================== */
 
     carregarRota(
         window.location.pathname
@@ -309,7 +367,11 @@ export function iniciarRouter() {
    NAVEGAÇÃO
 ========================================= */
 
-function navegar(caminho) {
+function navegar(
+    caminho,
+    query = "",
+    hash = ""
+) {
 
     const caminhoAtual =
         normalizarCaminho(
@@ -324,12 +386,22 @@ function navegar(caminho) {
 
 
     /*
-        Se o usuário já estiver na página,
-        não adiciona uma nova entrada ao histórico.
+        Mantém query string e hash.
+    */
+    const novaUrl =
+        `${novoCaminho}${query}${hash}`;
+
+
+    const urlAtual =
+        `${caminhoAtual}${window.location.search}${window.location.hash}`;
+
+
+    /*
+        Se já estiver exatamente no mesmo
+        endereço, apenas renderiza.
     */
     if (
-        caminhoAtual ===
-        novoCaminho
+        urlAtual === novaUrl
     ) {
 
         carregarRota(
@@ -343,7 +415,7 @@ function navegar(caminho) {
     history.pushState(
         {},
         "",
-        novoCaminho
+        novaUrl
     );
 
 
@@ -370,8 +442,8 @@ function carregarRota(caminho) {
 
 
     /*
-        Caso o caminho não exista,
-        volta para a página inicial.
+        Rota inexistente:
+        renderiza a página inicial.
     */
     if (!rota) {
 
