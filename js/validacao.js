@@ -538,46 +538,36 @@ function validarCPF(valor) {
    MÁSCARA TELEFONE
 ========================================= */
 
+
 function mascaraTelefone(valor) {
 
     valor = valor.replace(/\D/g, "");
 
     valor = valor.substring(0, 11);
 
-
-    /* Apenas DDD */
     if (valor.length <= 2) {
         return valor;
     }
 
-
-    /* DDD + início do número */
     if (valor.length <= 6) {
-
         return valor.replace(
             /(\d{2})(\d+)/,
             "($1) $2"
         );
     }
 
-
-    /* Telefone fixo: 10 dígitos */
     if (valor.length <= 10) {
-
         return valor.replace(
             /(\d{2})(\d{4})(\d{1,4})/,
             "($1) $2-$3"
         );
     }
 
-
-    /* Celular: 11 dígitos */
     return valor.replace(
         /(\d{2})(\d{5})(\d{1,4})/,
         "($1) $2-$3"
     );
 }
-
 /* =========================================
    MÁSCARA CEP
 ========================================= */
