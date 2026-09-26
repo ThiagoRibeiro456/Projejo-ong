@@ -10,16 +10,17 @@ import { renderizarPagina } from "./templates.js";
 
     /js/router.js
 
-    Portanto, ../ aponta para a raiz
-    do projeto.
+    ../ aponta para a raiz do projeto.
 
-    Exemplo no GitHub Pages:
+    Exemplo:
 
-    https://usuario.github.io/Projeto-ong/
+    https://thiagoribeiro456.github.io/Projeto-ong/
 
-    BASE_PATH:
+    BASE_PATH será:
+
     /Projeto-ong
 */
+
 const BASE_PATH = new URL("../", import.meta.url)
     .pathname
     .replace(/\/+$/, "");
@@ -29,10 +30,6 @@ const BASE_PATH = new URL("../", import.meta.url)
    FUNÇÕES AUXILIARES
 ========================================= */
 
-/*
-    Cria uma URL interna a partir da raiz
-    do projeto.
-*/
 function criarCaminho(caminho = "/") {
 
     if (!caminho.startsWith("/")) {
@@ -44,7 +41,8 @@ function criarCaminho(caminho = "/") {
 
 
 /*
-    Normaliza um caminho para comparação.
+    Normaliza o caminho para facilitar
+    a comparação entre as rotas.
 */
 function normalizarCaminho(caminho) {
 
@@ -54,7 +52,7 @@ function normalizarCaminho(caminho) {
 
 
     /*
-        Remove a barra final.
+        Remove barras finais.
     */
     if (
         caminho.length > 1 &&
@@ -83,10 +81,7 @@ function normalizarCaminho(caminho) {
 
 
 /*
-    Extrai somente o pathname da URL.
-
-    Query string e hash não são usados
-    para identificar a rota.
+    Retorna somente o pathname.
 */
 function obterCaminho(url) {
 
@@ -97,8 +92,7 @@ function obterCaminho(url) {
 
 
 /*
-    Verifica se uma URL pertence
-    ao projeto atual.
+    Verifica se a URL pertence ao projeto.
 */
 function pertenceAoProjeto(url) {
 
@@ -126,7 +120,6 @@ function pertenceAoProjeto(url) {
 
 const rotas = {
 
-    /* Página inicial */
     [normalizarCaminho(
         criarCaminho("/")
     )]: "index",
@@ -136,37 +129,31 @@ const rotas = {
     )]: "index",
 
 
-    /* Projetos */
     [normalizarCaminho(
         criarCaminho("/html/projetos.html")
     )]: "projetos",
 
 
-    /* Cadastro */
     [normalizarCaminho(
         criarCaminho("/html/cadastro.html")
     )]: "cadastro",
 
 
-    /* Inscrições */
     [normalizarCaminho(
         criarCaminho("/html/inscricoes.html")
     )]: "inscricoes",
 
 
-    /* Voluntariado */
     [normalizarCaminho(
         criarCaminho("/html/voluntariado.html")
     )]: "voluntariado",
 
 
-    /* Sobre */
     [normalizarCaminho(
         criarCaminho("/html/sobre.html")
     )]: "sobre",
 
 
-    /* Doações */
     [normalizarCaminho(
         criarCaminho("/html/doacoes.html")
     )]: "doacoes"
@@ -180,7 +167,7 @@ const rotas = {
 const caminhosCanonicos = {
 
     index:
-        criarCaminho("/"),
+        criarCaminho("/index.html"),
 
     projetos:
         criarCaminho(
@@ -215,13 +202,184 @@ const caminhosCanonicos = {
 
 
 /* =========================================
+   CORRIGIR LINKS DO MENU
+========================================= */
+
+function corrigirLinksMenu() {
+
+    const links =
+        document.querySelectorAll(
+            ".menu a"
+        );
+
+
+    if (!links.length) {
+        return;
+    }
+
+
+    links.forEach((link) => {
+
+        const hrefOriginal =
+            link.getAttribute("href");
+
+
+        if (!hrefOriginal) {
+            return;
+        }
+
+
+        /*
+            Ignora âncoras, e-mail, telefone
+            e outros tipos de link.
+        */
+        if (
+            hrefOriginal.startsWith("#") ||
+            hrefOriginal.startsWith("mailto:") ||
+            hrefOriginal.startsWith("tel:") ||
+            hrefOriginal.startsWith("javascript:")
+        ) {
+            return;
+        }
+
+
+        /*
+            Obtém apenas o nome do arquivo.
+        */
+        const caminhoLimpo =
+            hrefOriginal
+                .split("?")[0]
+                .split("#")[0];
+
+
+        const arquivo =
+            caminhoLimpo
+                .split("/")
+                .filter(Boolean)
+                .pop();
+
+
+        let pagina = null;
+
+
+        switch (arquivo) {
+
+            case "index.html":
+                pagina = "index";
+                break;
+
+            case "projetos.html":
+                pagina = "projetos";
+                break;
+
+            case "cadastro.html":
+                pagina = "cadastro";
+                break;
+
+            case "inscricoes.html":
+                pagina = "inscricoes";
+                break;
+
+            case "voluntariado.html":
+                pagina = "voluntariado";
+                break;
+
+            case "sobre.html":
+                pagina = "sobre";
+                break;
+
+            case "doacoes.html":
+                pagina = "doacoes";
+                break;
+        }
+
+
+        /*
+            Se o link pertence a uma página
+            conhecida, substitui pelo caminho
+            absoluto dentro do projeto.
+        */
+        if (
+            pagina &&
+            caminhosCanonicos[pagina]
+        ) {
+
+            link.setAttribute(
+                "href",
+                caminhosCanonicos[pagina]
+            );
+        }
+
+    });
+
+
+    atualizarPaginaAtiva();
+}
+
+
+/* =========================================
+   ATUALIZAR LINK ATIVO
+========================================= */
+
+function atualizarPaginaAtiva() {
+
+    const links =
+        document.querySelectorAll(
+            ".menu a"
+        );
+
+
+    const caminhoAtual =
+        normalizarCaminho(
+            window.location.pathname
+        );
+
+
+    links.forEach((link) => {
+
+        const url =
+            new URL(
+                link.href,
+                window.location.href
+            );
+
+
+        const caminhoLink =
+            normalizarCaminho(
+                url.pathname
+            );
+
+
+        const ativo =
+            caminhoAtual ===
+            caminhoLink;
+
+
+        if (ativo) {
+
+            link.setAttribute(
+                "aria-current",
+                "page"
+            );
+
+        } else {
+
+            link.removeAttribute(
+                "aria-current"
+            );
+        }
+    });
+}
+
+
+/* =========================================
    INICIALIZAÇÃO
 ========================================= */
 
 export function iniciarRouter() {
 
     /*
-        Evita registrar o router mais de uma vez.
+        Evita iniciar o router mais de uma vez.
     */
     if (
         document.body.dataset.routerIniciado ===
@@ -244,7 +402,7 @@ export function iniciarRouter() {
         (evento) => {
 
             /*
-                Apenas clique normal do botão esquerdo.
+                Apenas clique normal.
             */
             if (
                 evento.defaultPrevented ||
@@ -268,7 +426,8 @@ export function iniciarRouter() {
 
 
             /*
-                Não intercepta downloads.
+                Downloads não são tratados
+                pelo router.
             */
             if (
                 link.hasAttribute("download")
@@ -278,8 +437,7 @@ export function iniciarRouter() {
 
 
             /*
-                Não intercepta links para
-                novas abas/janelas.
+                Nova aba/janela.
             */
             if (
                 link.target === "_blank"
@@ -296,8 +454,8 @@ export function iniciarRouter() {
 
 
             /*
-                Ignora links externos ou
-                URLs fora do projeto.
+                Links externos continuam
+                sendo tratados pelo navegador.
             */
             if (
                 !pertenceAoProjeto(url)
@@ -310,13 +468,14 @@ export function iniciarRouter() {
                 obterCaminho(url);
 
 
-            /*
-                Verifica se a rota existe.
-            */
             const pagina =
                 rotas[caminho];
 
 
+            /*
+                Se não for uma rota conhecida,
+                não interfere no link.
+            */
             if (!pagina) {
                 return;
             }
@@ -325,12 +484,8 @@ export function iniciarRouter() {
             evento.preventDefault();
 
 
-            const caminhoCanonico =
-                caminhosCanonicos[pagina];
-
-
             navegar(
-                caminhoCanonico,
+                caminhosCanonicos[pagina],
                 url.search,
                 url.hash
             );
@@ -385,20 +540,17 @@ function navegar(
         );
 
 
-    /*
-        Mantém query string e hash.
-    */
-    const novaUrl =
-        `${novoCaminho}${query}${hash}`;
-
-
     const urlAtual =
         `${caminhoAtual}${window.location.search}${window.location.hash}`;
 
 
+    const novaUrl =
+        `${novoCaminho}${query}${hash}`;
+
+
     /*
-        Se já estiver exatamente no mesmo
-        endereço, apenas renderiza.
+        Evita criar uma nova entrada
+        quando já estamos na mesma página.
     */
     if (
         urlAtual === novaUrl
@@ -441,15 +593,13 @@ function carregarRota(caminho) {
         rotas[caminhoNormalizado];
 
 
-    /*
-        Rota inexistente:
-        renderiza a página inicial.
-    */
     if (!rota) {
 
         renderizarPagina(
             "index"
         );
+
+        corrigirLinksMenu();
 
         return;
     }
@@ -458,4 +608,12 @@ function carregarRota(caminho) {
     renderizarPagina(
         rota
     );
+
+
+    /*
+        Muito importante:
+        depois de mudar o <main>, corrigimos
+        novamente os links do menu.
+    */
+    corrigirLinksMenu();
 }
