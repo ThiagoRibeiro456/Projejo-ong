@@ -3,15 +3,17 @@
 ========================================= */
 
 /*
-    templates.js está dentro de:
+    templates.js está em:
 
     /js/templates.js
 
     ../ aponta para a raiz do projeto.
 
-    Funciona tanto localmente quanto no
-    GitHub Pages em uma subpasta.
+    Funciona localmente e no GitHub Pages,
+    inclusive quando o repositório está
+    publicado dentro de uma subpasta.
 */
+
 const BASE = new URL("../", import.meta.url);
 
 
@@ -73,6 +75,7 @@ const templates = {
             class="hero"
             aria-labelledby="titulo-principal"
         >
+
             <div class="hero-conteudo">
 
                 <span class="badge">
@@ -117,6 +120,7 @@ const templates = {
                 >
 
             </div>
+
         </section>
 
 
@@ -380,6 +384,7 @@ const templates = {
                     <img
                         src="${imagemComunidade}"
                         alt="Voluntários organizando doações para a comunidade"
+                        loading="lazy"
                     >
 
                     <div class="card-conteudo">
@@ -419,6 +424,7 @@ const templates = {
                     <img
                         src="${imagemEducacao}"
                         alt="Crianças estudando em uma sala de aula"
+                        loading="lazy"
                     >
 
                     <div class="card-conteudo">
@@ -457,6 +463,7 @@ const templates = {
                     <img
                         src="${imagemSustentabilidade}"
                         alt="Voluntários separando materiais para reciclagem"
+                        loading="lazy"
                     >
 
                     <div class="card-conteudo">
@@ -667,6 +674,7 @@ const templates = {
                             inputmode="numeric"
                             maxlength="14"
                             pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}"
+                            autocomplete="off"
                             required
                         >
 
@@ -1510,7 +1518,11 @@ const templates = {
             </div>
 
 
-            <div id="lista-inscricoes">
+            <div
+                id="lista-inscricoes"
+                class="cards"
+                aria-live="polite"
+            >
 
                 <article class="card">
 
@@ -1557,10 +1569,12 @@ const templates = {
 
 export function renderizarPagina(pagina) {
 
-    const main = document.querySelector("main");
+    const main =
+        document.querySelector("main");
 
 
     if (!main) {
+
         console.error(
             "Elemento <main> não encontrado."
         );
@@ -1621,7 +1635,8 @@ export function renderizarPagina(pagina) {
        RENDERIZAÇÃO DA PÁGINA
     ===================================== */
 
-    main.innerHTML = templates[pagina];
+    main.innerHTML =
+        templates[pagina];
 
 
     /* =====================================
