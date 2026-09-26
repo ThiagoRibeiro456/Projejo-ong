@@ -540,30 +540,19 @@ function validarCPF(valor) {
 
 function mascaraTelefone(valor) {
 
-    valor =
-        valor.replace(
-            /\D/g,
-            ""
-        );
+    valor = valor.replace(/\D/g, "");
+
+    valor = valor.substring(0, 11);
 
 
-    /*
-        O HTML atual aceita telefone
-        celular com 11 dígitos.
-    */
-    valor =
-        valor.substring(
-            0,
-            11
-        );
-
-
+    /* Apenas DDD */
     if (valor.length <= 2) {
         return valor;
     }
 
 
-    if (valor.length <= 7) {
+    /* DDD + início do número */
+    if (valor.length <= 6) {
 
         return valor.replace(
             /(\d{2})(\d+)/,
@@ -572,12 +561,22 @@ function mascaraTelefone(valor) {
     }
 
 
+    /* Telefone fixo: 10 dígitos */
+    if (valor.length <= 10) {
+
+        return valor.replace(
+            /(\d{2})(\d{4})(\d{1,4})/,
+            "($1) $2-$3"
+        );
+    }
+
+
+    /* Celular: 11 dígitos */
     return valor.replace(
         /(\d{2})(\d{5})(\d{1,4})/,
         "($1) $2-$3"
     );
 }
-
 
 /* =========================================
    MÁSCARA CEP
