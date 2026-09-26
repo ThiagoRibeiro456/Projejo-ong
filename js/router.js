@@ -128,36 +128,23 @@ const caminhosCanonicos = {
         criarCaminho("/index.html"),
 
     projetos:
-        criarCaminho(
-            "/html/projetos.html"
-        ),
+        criarCaminho("/html/projetos.html"),
 
     cadastro:
-        criarCaminho(
-            "/html/cadastro.html"
-        ),
+        criarCaminho("/html/cadastro.html"),
 
     inscricoes:
-        criarCaminho(
-            "/html/inscricoes.html"
-        ),
+        criarCaminho("/html/inscricoes.html"),
 
     voluntariado:
-        criarCaminho(
-            "/html/voluntariado.html"
-        ),
+        criarCaminho("/html/voluntariado.html"),
 
     sobre:
-        criarCaminho(
-            "/html/sobre.html"
-        ),
+        criarCaminho("/html/sobre.html"),
 
     doacoes:
-        criarCaminho(
-            "/html/doacoes.html"
-        )
+        criarCaminho("/html/doacoes.html")
 };
-
 
 /* =========================================
    CORRIGIR LINKS DO CABEÇALHO
@@ -327,75 +314,91 @@ export function iniciarRouter() {
     ===================================== */
 
     document.addEventListener(
-        "click",
-        (evento) => {
+    "click",
+    (evento) => {
 
-            if (
-                evento.defaultPrevented ||
-                evento.button !== 0 ||
-                evento.metaKey ||
-                evento.ctrlKey ||
-                evento.shiftKey ||
-                evento.altKey
-            ) {
-                return;
-            }
-
-
-            const link =
-                evento.target.closest("a");
+        if (
+            evento.defaultPrevented ||
+            evento.button !== 0 ||
+            evento.metaKey ||
+            evento.ctrlKey ||
+            evento.shiftKey ||
+            evento.altKey
+        ) {
+            return;
+        }
 
 
-            if (!link) {
-                return;
-            }
+        const link =
+            evento.target.closest("a");
 
 
-            if (
-                link.target === "_blank" ||
-                link.hasAttribute("download")
-            ) {
-                return;
-            }
+        if (!link) {
+            return;
+        }
 
 
-            const url =
-                new URL(
-                    link.href,
-                    window.location.href
-                );
+        /* =====================================
+           LOGO → VOLTAR DIRETAMENTE AO INDEX
+        ===================================== */
 
-
-            if (
-                !pertenceAoProjeto(url)
-            ) {
-                return;
-            }
-
-
-            const caminho =
-                obterCaminho(url);
-
-
-            const pagina =
-                rotas[caminho];
-
-
-            if (!pagina) {
-                return;
-            }
-
+        if (link.classList.contains("logo")) {
 
             evento.preventDefault();
 
-
-            navegar(
-                caminhosCanonicos[pagina],
-                url.search,
-                url.hash
+            window.location.assign(
+                caminhosCanonicos.index
             );
+
+            return;
         }
-    );
+
+
+        if (
+            link.target === "_blank" ||
+            link.hasAttribute("download")
+        ) {
+            return;
+        }
+
+
+        const url =
+            new URL(
+                link.href,
+                window.location.href
+            );
+
+
+        if (
+            !pertenceAoProjeto(url)
+        ) {
+            return;
+        }
+
+
+        const caminho =
+            obterCaminho(url);
+
+
+        const pagina =
+            rotas[caminho];
+
+
+        if (!pagina) {
+            return;
+        }
+
+
+        evento.preventDefault();
+
+
+        navegar(
+            caminhosCanonicos[pagina],
+            url.search,
+            url.hash
+        );
+    }
+);
 
 
     /* =====================================
