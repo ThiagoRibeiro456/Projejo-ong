@@ -6,54 +6,87 @@ import { renderizarPagina } from "./templates.js";
 ========================================= */
 
 /*
-    Descobre automaticamente a pasta em que
-    o projeto está publicado.
+    O arquivo está em:
 
-    Exemplo:
+    js/router.js
+
+    ../ aponta para a raiz do projeto.
+
+    Em um GitHub Pages como:
+
     https://usuario.github.io/juntos/
 
-    BASE_PATH = "/juntos"
+    o BASE_PATH será:
+
+    /juntos
 */
 const BASE_PATH = new URL("../", import.meta.url)
     .pathname
-    .replace(/\/$/, "");
+    .replace(/\/+$/, "");
 
 
 /* =========================================
    FUNÇÕES AUXILIARES
 ========================================= */
 
-function criarCaminho(caminho) {
+function criarCaminho(caminho = "/") {
+
+    if (!caminho.startsWith("/")) {
+        caminho = `/${caminho}`;
+    }
+
     return `${BASE_PATH}${caminho}`;
 }
 
 
+/*
+    Remove barras extras e trata a raiz
+    do projeto corretamente.
+*/
 function normalizarCaminho(caminho) {
 
     if (!caminho) {
-        return "/";
+        return BASE_PATH || "/";
     }
 
+
+    if (
+        BASE_PATH &&
+        (
+            caminho === BASE_PATH ||
+            caminho === `${BASE_PATH}/`
+        )
+    ) {
+        return BASE_PATH || "/";
+    }
+
+
     /*
-        Remove a barra final, exceto quando
-        o caminho é apenas "/".
+        Remove barra final.
+
+        Exemplo:
+        /juntos/html/projetos.html/
+        ->
+        /juntos/html/projetos.html
     */
     if (caminho.length > 1) {
         caminho = caminho.replace(/\/+$/, "");
     }
 
-    /*
-        No GitHub Pages, "/juntos/" e "/juntos"
-        representam a página inicial do projeto.
-    */
-    if (
-        BASE_PATH &&
-        (caminho === BASE_PATH || caminho === `${BASE_PATH}/`)
-    ) {
-        return BASE_PATH;
-    }
 
     return caminho;
+}
+
+
+/*
+    Retorna apenas o caminho da URL,
+    removendo query string e hash.
+*/
+function obterCaminho(url) {
+
+    return normalizarCaminho(
+        url.pathname
+    );
 }
 
 
@@ -63,15 +96,23 @@ function normalizarCaminho(caminho) {
 
 const rotas = {
 
-    /* Página inicial */
-    [normalizarCaminho(criarCaminho("/"))]: "index",
+    /* -------------------------------------
+       Página inicial
+    ------------------------------------- */
+
+    [normalizarCaminho(
+        criarCaminho("/")
+    )]: "index",
 
     [normalizarCaminho(
         criarCaminho("/index.html")
     )]: "index",
 
 
-    /* Páginas reais */
+    /* -------------------------------------
+       Páginas principais
+    ------------------------------------- */
+
     [normalizarCaminho(
         criarCaminho("/html/projetos.html")
     )]: "projetos",
@@ -94,41 +135,6 @@ const rotas = {
 
     [normalizarCaminho(
         criarCaminho("/html/doacoes.html")
-    )]: "doacoes",
-
-
-    /*
-        Compatibilidade com os caminhos usados
-        nos templates antigos.
-
-        Exemplo:
-        projetos.html
-        será direcionado para:
-        html/projetos.html
-    */
-
-    [normalizarCaminho(
-        criarCaminho("/projetos.html")
-    )]: "projetos",
-
-    [normalizarCaminho(
-        criarCaminho("/cadastro.html")
-    )]: "cadastro",
-
-    [normalizarCaminho(
-        criarCaminho("/inscricoes.html")
-    )]: "inscricoes",
-
-    [normalizarCaminho(
-        criarCaminho("/voluntariado.html")
-    )]: "voluntariado",
-
-    [normalizarCaminho(
-        criarCaminho("/sobre.html")
-    )]: "sobre",
-
-    [normalizarCaminho(
-        criarCaminho("/doacoes.html")
     )]: "doacoes"
 };
 
@@ -141,50 +147,55 @@ const caminhosCanonicos = {
 
     index: criarCaminho("/"),
 
-    projetos: criarCaminho(
-        "/html/projetos.html"
-    ),
+    projetos:
+        criarCaminho(
+            "/html/projetos.html"
+        ),
 
-    cadastro: criarCaminho(
-        "/html/cadastro.html"
-    ),
+    cadastro:
+        criarCaminho(
+            "/html/cadastro.html"
+        ),
 
-    inscricoes: criarCaminho(
-        "/html/inscricoes.html"
-    ),
+    inscricoes:
+        criarCaminho(
+            "/html/inscricoes.html"
+        ),
 
-    voluntariado: criarCaminho(
-        "/html/voluntariado.html"
-    ),
+    voluntariado:
+        criarCaminho(
+            "/html/voluntariado.html"
+        ),
 
-    sobre: criarCaminho(
-        "/html/sobre.html"
-    ),
+    sobre:
+        criarCaminho(
+            "/html/sobre.html"
+        ),
 
-    doacoes: criarCaminho(
-        "/html/doacoes.html"
-    )
+    doacoes:
+        criarCaminho(
+            "/html/doacoes.html"
+        )
 };
 
 
 /* =========================================
-   INICIALIZAÇÃO DO ROUTER
+   INICIALIZAÇÃO
 ========================================= */
 
 export function iniciarRouter() {
+
+
+    /* -------------------------------------
+       Navegação por links
+    ------------------------------------- */
 
     document.addEventListener(
         "click",
         (evento) => {
 
             /*
-                Não intercepta cliques modificados.
-
-                Isso preserva comportamentos como:
-                Ctrl + clique
-                Shift + clique
-                Alt + clique
-                clique do botão do meio
+                Apenas cliques normais do botão esquerdo.
             */
             if (
                 evento.defaultPrevented ||
@@ -198,7 +209,8 @@ export function iniciarRouter() {
             }
 
 
-            const link = evento.target.closest("a");
+            const link =
+                evento.target.closest("a");
 
 
             if (!link) {
@@ -207,8 +219,8 @@ export function iniciarRouter() {
 
 
             /*
-                Não intercepta links que devem abrir
-                em outra aba/janela.
+                Links destinados a outras abas
+                ou downloads não são interceptados.
             */
             if (
                 link.target === "_blank" ||
@@ -218,31 +230,32 @@ export function iniciarRouter() {
             }
 
 
-            const url = new URL(
-                link.href,
-                window.location.href
-            );
+            const url =
+                new URL(
+                    link.href,
+                    window.location.href
+                );
 
 
             /*
-                Links externos continuam funcionando
-                normalmente.
+                Links externos continuam
+                funcionando normalmente.
             */
             if (
-                url.origin !== window.location.origin
+                url.origin !==
+                window.location.origin
             ) {
                 return;
             }
 
 
-            const caminho = normalizarCaminho(
-                url.pathname
-            );
+            const caminho =
+                obterCaminho(url);
 
 
             /*
-                Verifica se o caminho pertence
-                ao SPA.
+                Verifica se a URL pertence
+                ao sistema de rotas.
             */
             if (!rotas[caminho]) {
                 return;
@@ -252,27 +265,24 @@ export function iniciarRouter() {
             evento.preventDefault();
 
 
-            /*
-                Descobre o nome da página.
-            */
-            const pagina = rotas[caminho];
+            const pagina =
+                rotas[caminho];
 
 
-            /*
-                Usa sempre o caminho canônico.
-            */
-            const caminhoFinal =
+            const caminhoCanonico =
                 caminhosCanonicos[pagina];
 
 
-            navegar(caminhoFinal);
+            navegar(
+                caminhoCanonico
+            );
         }
     );
 
 
-    /* =====================================
-       BOTÕES AVANÇAR / VOLTAR DO NAVEGADOR
-    ===================================== */
+    /* -------------------------------------
+       Botões voltar / avançar
+    ------------------------------------- */
 
     window.addEventListener(
         "popstate",
@@ -285,9 +295,9 @@ export function iniciarRouter() {
     );
 
 
-    /* =====================================
-       CARREGAMENTO INICIAL
-    ===================================== */
+    /* -------------------------------------
+       Carregamento inicial
+    ------------------------------------- */
 
     carregarRota(
         window.location.pathname
@@ -301,23 +311,30 @@ export function iniciarRouter() {
 
 function navegar(caminho) {
 
-    const caminhoAtual = normalizarCaminho(
-        window.location.pathname
-    );
+    const caminhoAtual =
+        normalizarCaminho(
+            window.location.pathname
+        );
 
-    const novoCaminho = normalizarCaminho(
-        caminho
-    );
+
+    const novoCaminho =
+        normalizarCaminho(
+            caminho
+        );
 
 
     /*
-        Evita criar uma entrada desnecessária
-        no histórico quando o usuário já está
-        na mesma página.
+        Se o usuário já estiver na página,
+        não adiciona uma nova entrada ao histórico.
     */
-    if (caminhoAtual === novoCaminho) {
+    if (
+        caminhoAtual ===
+        novoCaminho
+    ) {
 
-        carregarRota(novoCaminho);
+        carregarRota(
+            novoCaminho
+        );
 
         return;
     }
@@ -326,11 +343,13 @@ function navegar(caminho) {
     history.pushState(
         {},
         "",
-        caminho
+        novoCaminho
     );
 
 
-    carregarRota(caminho);
+    carregarRota(
+        novoCaminho
+    );
 }
 
 
@@ -341,12 +360,30 @@ function navegar(caminho) {
 function carregarRota(caminho) {
 
     const caminhoNormalizado =
-        normalizarCaminho(caminho);
+        normalizarCaminho(
+            caminho
+        );
 
 
     const rota =
-        rotas[caminhoNormalizado] || "index";
+        rotas[caminhoNormalizado];
 
 
-    renderizarPagina(rota);
+    /*
+        Caso o caminho não exista,
+        volta para a página inicial.
+    */
+    if (!rota) {
+
+        renderizarPagina(
+            "index"
+        );
+
+        return;
+    }
+
+
+    renderizarPagina(
+        rota
+    );
 }
