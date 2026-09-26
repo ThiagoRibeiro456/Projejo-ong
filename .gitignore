@@ -1,0 +1,15 @@
+# Sistema operacional
+Thumbs.db
+.DS_Store
+
+# Visual Studio Code
+.vscode/
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.log
+
+# Arquivos de backup
+*.bak
+*.swp
