@@ -123,27 +123,13 @@ const rotas = {
 ========================================= */
 
 const caminhosCanonicos = {
-
-    index:
-        criarCaminho("/index.html"),
-
-    projetos:
-        criarCaminho("/html/projetos.html"),
-
-    cadastro:
-        criarCaminho("/html/cadastro.html"),
-
-    inscricoes:
-        criarCaminho("/html/inscricoes.html"),
-
-    voluntariado:
-        criarCaminho("/html/voluntariado.html"),
-
-    sobre:
-        criarCaminho("/html/sobre.html"),
-
-    doacoes:
-        criarCaminho("/html/doacoes.html")
+    index: criarCaminho("/index.html"),
+    projetos: criarCaminho("/html/projetos.html"),
+    cadastro: criarCaminho("/html/cadastro.html"),
+    inscricoes: criarCaminho("/html/inscricoes.html"),
+    voluntariado: criarCaminho("/html/voluntariado.html"),
+    sobre: criarCaminho("/html/sobre.html"),
+    doacoes: criarCaminho("/html/doacoes.html")
 };
 
 /* =========================================
