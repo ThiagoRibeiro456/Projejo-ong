@@ -10,8 +10,8 @@
     ../ aponta para a raiz do projeto.
 
     Funciona localmente e no GitHub Pages,
-    inclusive quando o repositório está
-    publicado dentro de uma subpasta.
+    inclusive quando o projeto está publicado
+    dentro de uma subpasta.
 */
 
 const BASE = new URL("../", import.meta.url);
@@ -22,16 +22,28 @@ const BASE = new URL("../", import.meta.url);
 ========================================= */
 
 const imagemVoluntarios =
-    new URL("img/voluntarios.webp", BASE).href;
+    new URL(
+        "img/voluntarios.webp",
+        BASE
+    ).href;
 
 const imagemComunidade =
-    new URL("img/projeto-1.webp", BASE).href;
+    new URL(
+        "img/projeto-1.webp",
+        BASE
+    ).href;
 
 const imagemEducacao =
-    new URL("img/projeto-2.webp", BASE).href;
+    new URL(
+        "img/projeto-2.webp",
+        BASE
+    ).href;
 
 const imagemSustentabilidade =
-    new URL("img/projeto-3.webp", BASE).href;
+    new URL(
+        "img/projeto-3.webp",
+        BASE
+    ).href;
 
 
 /* =========================================
@@ -39,25 +51,46 @@ const imagemSustentabilidade =
 ========================================= */
 
 const paginaInicio =
-    new URL("index.html", BASE).pathname;
+    new URL(
+        "index.html",
+        BASE
+    ).pathname;
 
 const paginaProjetos =
-    new URL("html/projetos.html", BASE).pathname;
+    new URL(
+        "html/projetos.html",
+        BASE
+    ).pathname;
 
 const paginaCadastro =
-    new URL("html/cadastro.html", BASE).pathname;
+    new URL(
+        "html/cadastro.html",
+        BASE
+    ).pathname;
 
 const paginaInscricoes =
-    new URL("html/inscricoes.html", BASE).pathname;
+    new URL(
+        "html/inscricoes.html",
+        BASE
+    ).pathname;
 
 const paginaVoluntariado =
-    new URL("html/voluntariado.html", BASE).pathname;
+    new URL(
+        "html/voluntariado.html",
+        BASE
+    ).pathname;
 
 const paginaSobre =
-    new URL("html/sobre.html", BASE).pathname;
+    new URL(
+        "html/sobre.html",
+        BASE
+    ).pathname;
 
 const paginaDoacoes =
-    new URL("html/doacoes.html", BASE).pathname;
+    new URL(
+        "html/doacoes.html",
+        BASE
+    ).pathname;
 
 
 /* =========================================
@@ -673,7 +706,7 @@ const templates = {
                             placeholder="000.000.000-00"
                             inputmode="numeric"
                             maxlength="14"
-                            pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}"
+                            pattern="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}-[0-9]{2}"
                             autocomplete="off"
                             required
                         >
@@ -694,16 +727,16 @@ const templates = {
                         </label>
 
                         <input
-                         type="tel"
-                         id="telefone"
-                         name="telefone"
-                         placeholder="(00) 00000-0000"
-                         inputmode="tel"
-                         maxlength="15"
-                         pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
-                         autocomplete="tel"
-                         required
-                     >
+                            type="tel"
+                            id="telefone"
+                            name="telefone"
+                            placeholder="(00) 00000-0000"
+                            inputmode="tel"
+                            maxlength="15"
+                            pattern="\\([0-9]{2}\\) [0-9]{4,5}-[0-9]{4}"
+                            autocomplete="tel"
+                            required
+                        >
 
                         <span
                             class="mensagem-erro"
