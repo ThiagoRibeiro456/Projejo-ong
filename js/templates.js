@@ -721,31 +721,30 @@ const templates = {
 
 
                     <div class="campo">
-
+                     
                         <label for="telefone">
-                            Telefone *
+                           Telefone *
                         </label>
-
+                     
                         <input
-                            type="tel"
-                            id="telefone"
-                            name="telefone"
-                            placeholder="(00) 00000-0000"
-                            inputmode="tel"
-                            maxlength="15"
-                            pattern="\\([0-9]{2}\\) [0-9]{4,5}-[0-9]{4}"
-                            autocomplete="tel"
-                            required
+                           type="tel"
+                           id="telefone"
+                           name="telefone"
+                           placeholder="(00) 00000-0000"
+                           inputmode="tel"
+                           maxlength="15"
+                           pattern="[(][0-9]{2}[)] [0-9]{4,5}-[0-9]{4}"
+                           autocomplete="tel"
+                           required
                         >
-
+                     
                         <span
-                            class="mensagem-erro"
-                            id="erro-telefone"
-                            aria-live="polite"
+                           class="mensagem-erro"
+                           id="erro-telefone"
+                           aria-live="polite"
                         ></span>
-
-                    </div>
-
+                  
+                  </div>
                 </fieldset>
 
 
