@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
     inicializarInscricoes();
 
     observarNavegacaoSPA();
+
+    atualizarMenuAtivo();
 });
 
 
@@ -31,8 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function iniciarMenu() {
 
-    const botaoMenu = document.querySelector(".menu-toggle");
-    const navegacao = document.querySelector(".navegacao");
+    const botaoMenu =
+        document.querySelector(".menu-toggle");
+
+    const navegacao =
+        document.querySelector(".navegacao");
 
 
     if (!botaoMenu || !navegacao) {
@@ -40,72 +45,101 @@ function iniciarMenu() {
     }
 
 
-    botaoMenu.addEventListener("click", () => {
+    /* -----------------------------
+       Abrir / fechar menu
+    ----------------------------- */
 
-        const aberto =
-            navegacao.classList.toggle("active");
+    botaoMenu.addEventListener(
+        "click",
+        () => {
+
+            const aberto =
+                navegacao.classList.toggle(
+                    "active"
+                );
 
 
-        atualizarEstadoMenu(
-            botaoMenu,
-            aberto
-        );
-    });
-
-
-    /*
-        Fecha o menu quando o usuário pressiona
-        a tecla ESC.
-    */
-    document.addEventListener("keydown", (evento) => {
-
-        if (evento.key !== "Escape") {
-            return;
+            atualizarEstadoMenu(
+                botaoMenu,
+                aberto
+            );
         }
+    );
 
 
-        if (!navegacao.classList.contains("active")) {
-            return;
+    /* -----------------------------
+       Fechar com ESC
+    ----------------------------- */
+
+    document.addEventListener(
+        "keydown",
+        (evento) => {
+
+            if (
+                evento.key !== "Escape"
+            ) {
+                return;
+            }
+
+
+            if (
+                !navegacao.classList.contains(
+                    "active"
+                )
+            ) {
+                return;
+            }
+
+
+            navegacao.classList.remove(
+                "active"
+            );
+
+
+            atualizarEstadoMenu(
+                botaoMenu,
+                false
+            );
+
+
+            botaoMenu.focus();
         }
+    );
 
 
-        navegacao.classList.remove("active");
+    /* -----------------------------
+       Fechar ao clicar em um link
+    ----------------------------- */
 
-        atualizarEstadoMenu(
-            botaoMenu,
-            false
-        );
+    navegacao.addEventListener(
+        "click",
+        (evento) => {
 
-        botaoMenu.focus();
-    });
-
-
-    /*
-        Event delegation para os links do menu.
-        Assim o código continua simples e robusto.
-    */
-    navegacao.addEventListener("click", (evento) => {
-
-        const link = evento.target.closest("a");
+            const link =
+                evento.target.closest("a");
 
 
-        if (!link) {
-            return;
+            if (!link) {
+                return;
+            }
+
+
+            navegacao.classList.remove(
+                "active"
+            );
+
+
+            atualizarEstadoMenu(
+                botaoMenu,
+                false
+            );
         }
-
-
-        navegacao.classList.remove("active");
-
-        atualizarEstadoMenu(
-            botaoMenu,
-            false
-        );
-    });
+    );
 }
 
 
 /* =========================================
-   ATUALIZAÇÃO DO ESTADO DO MENU
+   ESTADO DO MENU
 ========================================= */
 
 function atualizarEstadoMenu(
@@ -129,13 +163,114 @@ function atualizarEstadoMenu(
 
 
 /* =========================================
+   ATUALIZA LINK ATIVO DO MENU
+========================================= */
+
+function atualizarMenuAtivo() {
+
+    const links =
+        document.querySelectorAll(
+            ".menu a"
+        );
+
+
+    if (!links.length) {
+        return;
+    }
+
+
+    const caminhoAtual =
+        normalizarCaminho(
+            window.location.pathname
+        );
+
+
+    links.forEach((link) => {
+
+        const caminhoLink =
+            normalizarCaminho(
+                new URL(
+                    link.href,
+                    window.location.href
+                ).pathname
+            );
+
+
+        const ativo =
+            caminhoAtual === caminhoLink;
+
+
+        if (ativo) {
+
+            link.setAttribute(
+                "aria-current",
+                "page"
+            );
+
+        } else {
+
+            link.removeAttribute(
+                "aria-current"
+            );
+        }
+    });
+}
+
+
+/* =========================================
+   NORMALIZAÇÃO DE CAMINHO
+========================================= */
+
+function normalizarCaminho(caminho) {
+
+    if (!caminho) {
+        return "/";
+    }
+
+
+    if (
+        caminho.length > 1
+    ) {
+        caminho =
+            caminho.replace(
+                /\/+$/,
+                ""
+            );
+    }
+
+
+    /*
+        Trata index.html como a raiz
+        da aplicação.
+    */
+    if (
+        caminho.endsWith(
+            "/index.html"
+        )
+    ) {
+
+        return caminho.substring(
+            0,
+            caminho.length -
+                "/index.html".length
+        ) || "/";
+    }
+
+
+    return caminho;
+}
+
+
+/* =========================================
    VALIDAÇÃO DO FORMULÁRIO
 ========================================= */
 
 function inicializarValidacao() {
 
     const formulario =
-        document.querySelector("#form-cadastro");
+        document.querySelector(
+            "#form-cadastro"
+        );
 
 
     if (!formulario) {
@@ -143,12 +278,9 @@ function inicializarValidacao() {
     }
 
 
-    /*
-        Evita registrar os eventos duas vezes
-        no mesmo formulário.
-    */
     if (
-        formulario.dataset.validacaoIniciada === "true"
+        formulario.dataset.validacaoIniciada ===
+        "true"
     ) {
         return;
     }
@@ -163,7 +295,7 @@ function inicializarValidacao() {
 
 
 /* =========================================
-   OBSERVADOR DA SPA
+   OBSERVAÇÃO DA SPA
 ========================================= */
 
 function observarNavegacaoSPA() {
@@ -178,9 +310,13 @@ function observarNavegacaoSPA() {
 
 
     /*
-        Como o router modifica o innerHTML
-        do <main>, o MutationObserver detecta
-        quando uma nova página foi renderizada.
+        Observa SOMENTE alterações nos filhos
+        diretos de <main>.
+
+        Isso permite detectar quando o router
+        troca a página, mas evita reagir às
+        alterações internas da lista de inscrições,
+        formulário e mensagens.
     */
     const observador =
         new MutationObserver(() => {
@@ -188,13 +324,17 @@ function observarNavegacaoSPA() {
             inicializarValidacao();
 
             inicializarInscricoes();
+
+            atualizarMenuAtivo();
         });
 
 
-    observador.observe(main, {
-        childList: true,
-        subtree: true
-    });
+    observador.observe(
+        main,
+        {
+            childList: true
+        }
+    );
 }
 
 
@@ -205,7 +345,9 @@ function observarNavegacaoSPA() {
 function inicializarInscricoes() {
 
     const lista =
-        document.querySelector("#lista-inscricoes");
+        document.querySelector(
+            "#lista-inscricoes"
+        );
 
 
     if (!lista) {
@@ -214,11 +356,14 @@ function inicializarInscricoes() {
 
 
     /*
-        Evita inicializar a mesma página várias vezes.
+        Se a página já estiver inicializada,
+        apenas atualiza a lista.
     */
     if (
-        lista.dataset.inscricoesIniciadas === "true"
+        lista.dataset.inscricoesIniciadas ===
+        "true"
     ) {
+
         atualizarListaInscricoes();
 
         return;
@@ -232,9 +377,10 @@ function inicializarInscricoes() {
     atualizarListaInscricoes();
 
 
-    /*
-        Botão de limpar todas as inscrições.
-    */
+    /* -----------------------------
+       Botão limpar inscrições
+    ----------------------------- */
+
     const botaoLimpar =
         document.querySelector(
             "#limpar-inscricoes"
@@ -251,7 +397,9 @@ function inicializarInscricoes() {
                     obterInscricoes();
 
 
-                if (inscricoes.length === 0) {
+                if (
+                    inscricoes.length === 0
+                ) {
 
                     mostrarToast(
                         "Não existem inscrições para limpar.",
@@ -273,7 +421,19 @@ function inicializarInscricoes() {
                 }
 
 
-                limparInscricoes();
+                const sucesso =
+                    limparInscricoes();
+
+
+                if (!sucesso) {
+
+                    mostrarToast(
+                        "Não foi possível limpar as inscrições.",
+                        "erro"
+                    );
+
+                    return;
+                }
 
 
                 atualizarListaInscricoes();
@@ -288,9 +448,10 @@ function inicializarInscricoes() {
     }
 
 
-    /*
-        Permite remover uma inscrição individual.
-    */
+    /* -----------------------------
+       Remover inscrição individual
+    ----------------------------- */
+
     lista.addEventListener(
         "click",
         (evento) => {
@@ -306,18 +467,34 @@ function inicializarInscricoes() {
             }
 
 
+            /*
+                IMPORTANTE:
+                Os IDs agora podem ser UUIDs,
+                portanto não devem ser convertidos
+                para Number.
+            */
             const id =
-                Number(
-                    botao.dataset.removerInscricao
-                );
+                botao.dataset.removerInscricao;
 
 
-            if (!Number.isFinite(id)) {
+            if (!id) {
                 return;
             }
 
 
-            removerInscricao(id);
+            const sucesso =
+                removerInscricao(id);
+
+
+            if (!sucesso) {
+
+                mostrarToast(
+                    "Não foi possível remover a inscrição.",
+                    "erro"
+                );
+
+                return;
+            }
 
 
             atualizarListaInscricoes();
@@ -333,13 +510,15 @@ function inicializarInscricoes() {
 
 
 /* =========================================
-   ATUALIZAÇÃO DA LISTA
+   ATUALIZAR LISTA DE INSCRIÇÕES
 ========================================= */
 
 function atualizarListaInscricoes() {
 
     const lista =
-        document.querySelector("#lista-inscricoes");
+        document.querySelector(
+            "#lista-inscricoes"
+        );
 
 
     if (!lista) {
@@ -351,7 +530,9 @@ function atualizarListaInscricoes() {
         obterInscricoes();
 
 
-    if (inscricoes.length === 0) {
+    if (
+        inscricoes.length === 0
+    ) {
 
         lista.innerHTML = `
             <article class="card">
@@ -365,6 +546,13 @@ function atualizarListaInscricoes() {
                     neste navegador.
                 </p>
 
+                <a
+                    href="html/cadastro.html"
+                    class="btn btn-primario"
+                >
+                    Fazer cadastro
+                </a>
+
             </article>
         `;
 
@@ -375,127 +563,209 @@ function atualizarListaInscricoes() {
     lista.innerHTML = "";
 
 
-    inscricoes.forEach((inscricao) => {
+    inscricoes.forEach(
+        (inscricao) => {
 
-        const card =
-            document.createElement("article");
-
-
-        card.className = "card";
-
-
-        const titulo =
-            document.createElement("h3");
+            const card =
+                document.createElement(
+                    "article"
+                );
 
 
-        titulo.textContent =
-            inscricao.nome ||
-            "Sem nome";
+            card.className = "card";
 
 
-        const email =
-            document.createElement("p");
+            /* -------------------------
+               Nome
+            ------------------------- */
+
+            const titulo =
+                document.createElement(
+                    "h3"
+                );
 
 
-        email.innerHTML =
-            `<strong>E-mail:</strong> ${escaparHTML(
-                inscricao.email || "-"
-            )}`;
+            titulo.textContent =
+                inscricao.nome ||
+                "Sem nome";
 
 
-        const telefone =
-            document.createElement("p");
+            /* -------------------------
+               E-mail
+            ------------------------- */
+
+            const email =
+                document.createElement(
+                    "p"
+                );
 
 
-        telefone.innerHTML =
-            `<strong>Telefone:</strong> ${escaparHTML(
-                inscricao.telefone || "-"
-            )}`;
+            email.innerHTML =
+                `<strong>E-mail:</strong> ${escaparHTML(
+                    inscricao.email || "-"
+                )}`;
 
 
-        const interesse =
-            document.createElement("p");
+            /* -------------------------
+               Telefone
+            ------------------------- */
+
+            const telefone =
+                document.createElement(
+                    "p"
+                );
 
 
-        interesse.innerHTML =
-            `<strong>Interesse:</strong> ${escaparHTML(
-                traduzirInteresse(
-                    inscricao.interesse
-                )
-            )}`;
+            telefone.innerHTML =
+                `<strong>Telefone:</strong> ${escaparHTML(
+                    inscricao.telefone || "-"
+                )}`;
 
 
-        const data =
-            document.createElement("p");
+            /* -------------------------
+               Interesse
+            ------------------------- */
+
+            const interesse =
+                document.createElement(
+                    "p"
+                );
 
 
-        data.innerHTML =
-            `<strong>Cadastro:</strong> ${formatarData(
-                inscricao.dataCadastro
-            )}`;
+            interesse.innerHTML =
+                `<strong>Interesse:</strong> ${escaparHTML(
+                    traduzirInteresse(
+                        inscricao.interesse
+                    )
+                )}`;
 
 
-        const botao =
-            document.createElement("button");
+            /* -------------------------
+               Data
+            ------------------------- */
+
+            const data =
+                document.createElement(
+                    "p"
+                );
 
 
-        botao.type = "button";
-
-        botao.className =
-            "btn btn-secundario";
-
-
-        botao.textContent =
-            "Remover";
+            data.innerHTML =
+                `<strong>Cadastro:</strong> ${formatarData(
+                    inscricao.dataCadastro
+                )}`;
 
 
-        botao.dataset.removerInscricao =
-            String(inscricao.id);
+            /* -------------------------
+               Botão remover
+            ------------------------- */
+
+            const botao =
+                document.createElement(
+                    "button"
+                );
 
 
-        const acoes =
-            document.createElement("div");
+            botao.type = "button";
+
+            botao.className =
+                "btn btn-secundario";
+
+            botao.textContent =
+                "Remover";
+
+            botao.dataset.removerInscricao =
+                String(
+                    inscricao.id
+                );
 
 
-        acoes.className =
-            "acoes-formulario";
+            /* -------------------------
+               Área das ações
+            ------------------------- */
+
+            const acoes =
+                document.createElement(
+                    "div"
+                );
 
 
-        acoes.appendChild(botao);
+            acoes.className =
+                "acoes-formulario";
 
 
-        card.appendChild(titulo);
-        card.appendChild(email);
-        card.appendChild(telefone);
-        card.appendChild(interesse);
-        card.appendChild(data);
-        card.appendChild(acoes);
+            acoes.appendChild(
+                botao
+            );
 
 
-        lista.appendChild(card);
-    });
+            /* -------------------------
+               Montagem
+            ------------------------- */
+
+            card.appendChild(
+                titulo
+            );
+
+            card.appendChild(
+                email
+            );
+
+            card.appendChild(
+                telefone
+            );
+
+            card.appendChild(
+                interesse
+            );
+
+            card.appendChild(
+                data
+            );
+
+            card.appendChild(
+                acoes
+            );
+
+
+            lista.appendChild(
+                card
+            );
+        }
+    );
 }
 
 
 /* =========================================
-   TRADUZ INTERESSE
+   TRADUZIR INTERESSE
 ========================================= */
 
-function traduzirInteresse(interesse) {
+function traduzirInteresse(
+    interesse
+) {
 
     const valores = {
-        voluntariado: "Voluntariado",
-        doacoes: "Doações",
-        projetos: "Participação em projetos"
+
+        voluntariado:
+            "Voluntariado",
+
+        doacoes:
+            "Doações",
+
+        projetos:
+            "Participação em projetos"
     };
 
 
-    return valores[interesse] || "Não informado";
+    return (
+        valores[interesse] ||
+        "Não informado"
+    );
 }
 
 
 /* =========================================
-   FORMATA DATA
+   FORMATAR DATA
 ========================================= */
 
 function formatarData(data) {
@@ -509,9 +779,12 @@ function formatarData(data) {
         new Date(data);
 
 
-    if (Number.isNaN(
-        dataObjeto.getTime()
-    )) {
+    if (
+        Number.isNaN(
+            dataObjeto.getTime()
+        )
+    ) {
+
         return "Data inválida";
     }
 
@@ -523,17 +796,32 @@ function formatarData(data) {
 
 
 /* =========================================
-   ESCAPE DE HTML
+   ESCAPAR HTML
 ========================================= */
 
 function escaparHTML(valor) {
 
     return String(valor)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 }
 
 
@@ -547,7 +835,9 @@ export function mostrarToast(
 ) {
 
     let toast =
-        document.querySelector(".toast");
+        document.querySelector(
+            ".toast"
+        );
 
 
     if (toast) {
@@ -556,7 +846,9 @@ export function mostrarToast(
 
 
     toast =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     toast.className =
@@ -588,11 +880,16 @@ export function mostrarToast(
     );
 
 
-    window.setTimeout(() => {
+    window.setTimeout(
+        () => {
 
-        if (toast.isConnected) {
-            toast.remove();
-        }
+            if (
+                toast.isConnected
+            ) {
+                toast.remove();
+            }
 
-    }, 3000);
+        },
+        3000
+    );
 }
