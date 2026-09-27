@@ -329,13 +329,9 @@ function observarNavegacaoSPA() {
         });
 
 
-    observador.observe(
-        main,
-        {
-            childList: true
-        }
-    );
-}
+observador.observe(main, {
+    childList: true
+});
 
 
 /* =========================================
