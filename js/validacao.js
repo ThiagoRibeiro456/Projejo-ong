@@ -1,549 +1,232 @@
 import { salvarInscricao } from "./storage.js";
 
-
-/* =========================================
-   INICIALIZAÇÃO
-========================================= */
-
 export function iniciarValidacao() {
+    const formulario = document.querySelector("#form-cadastro");
 
-    const formulario =
-        document.querySelector("#form-cadastro");
-
-
-    if (!formulario) {
+    if (!formulario || formulario.dataset.validacaoIniciada === "true") {
         return;
     }
 
+    formulario.dataset.validacaoIniciada = "true";
 
-    /*
-        Evita registrar os mesmos eventos
-        mais de uma vez no mesmo formulário.
-    */
-    if (
-        formulario.dataset.validacaoIniciada === "true"
-    ) {
-        return;
-    }
-
-
-    formulario.dataset.validacaoIniciada =
-        "true";
-
-
-    const campos =
-        formulario.querySelectorAll(
-            "input, select, textarea"
-        );
-
-
-    /* =====================================
-       EVENTOS DOS CAMPOS
-    ===================================== */
+    const campos = formulario.querySelectorAll(
+        "input, select, textarea"
+    );
 
     campos.forEach((campo) => {
+        campo.addEventListener("input", () => {
+            aplicarMascara(campo);
+            validarCampo(campo);
+        });
 
-        campo.addEventListener(
-            "input",
-            () => {
-
-                aplicarMascara(campo);
-
-                validarCampo(campo);
-            }
-        );
-
-
-        campo.addEventListener(
-            "blur",
-            () => {
-
-                validarCampo(campo);
-            }
-        );
-
-
-        campo.addEventListener(
-            "change",
-            () => {
-
-                validarCampo(campo);
-            }
-        );
+        campo.addEventListener("blur", () => validarCampo(campo));
+        campo.addEventListener("change", () => validarCampo(campo));
     });
 
+    formulario.addEventListener("submit", (evento) => {
+        evento.preventDefault();
 
-    /* =====================================
-       ENVIO
-    ===================================== */
+        const formularioValido = [...campos].every(validarCampo);
 
-    formulario.addEventListener(
-        "submit",
-        (evento) => {
-
-            evento.preventDefault();
-
-
-            let formularioValido = true;
-
-
-            campos.forEach((campo) => {
-
-                /*
-                    Campos opcionais vazios não
-                    impedem o envio.
-                */
-                if (!validarCampo(campo)) {
-                    formularioValido = false;
-                }
-            });
-
-
-            if (!formularioValido) {
-
-                mostrarMensagem(
-                    "Verifique os campos destacados.",
-                    "erro"
-                );
-
-
-                const primeiroInvalido =
-                    formulario.querySelector(
-                        ":invalid"
-                    );
-
-
-                if (primeiroInvalido) {
-                    primeiroInvalido.focus();
-                }
-
-
-                return;
-            }
-
-
-            const dados =
-                Object.fromEntries(
-                    new FormData(formulario).entries()
-                );
-
-
-            const salvo =
-                salvarInscricao(dados);
-
-
-            /*
-                Confirma se o localStorage conseguiu
-                salvar os dados.
-            */
-            if (!salvo) {
-
-                mostrarMensagem(
-                    "Não foi possível salvar o cadastro. Tente novamente.",
-                    "erro"
-                );
-
-                return;
-            }
-
-
+        if (!formularioValido) {
             mostrarMensagem(
-                "Cadastro realizado com sucesso!",
-                "sucesso"
+                "Verifique os campos destacados.",
+                "erro"
             );
 
+            formulario.querySelector(":invalid")?.focus();
+            return;
+        }
 
-            formulario.reset();
+        const dados = Object.fromEntries(
+            new FormData(formulario).entries()
+        );
 
-
-            limparEstadoCampos(
-                formulario
+        if (!salvarInscricao(dados)) {
+            mostrarMensagem(
+                "Não foi possível salvar o cadastro. Tente novamente.",
+                "erro"
             );
+            return;
         }
-    );
 
+        mostrarMensagem(
+            "Cadastro realizado com sucesso!",
+            "sucesso"
+        );
 
-    /* =====================================
-       RESET
-    ===================================== */
+        formulario.reset();
+        limparEstadoCampos(formulario);
+    });
 
-    formulario.addEventListener(
-        "reset",
-        () => {
-
-            /*
-                reset() é executado antes da limpeza
-                efetiva dos valores. Por isso utilizamos
-                requestAnimationFrame.
-            */
-            requestAnimationFrame(() => {
-
-                limparEstadoCampos(
-                    formulario
-                );
-
-
-                limparMensagem();
-            });
-        }
-    );
+    formulario.addEventListener("reset", () => {
+        requestAnimationFrame(() => {
+            limparEstadoCampos(formulario);
+            limparMensagem();
+        });
+    });
 }
 
-
-/* =========================================
-   VALIDAÇÃO DE CAMPO
-========================================= */
+/* VALIDAÇÃO */
 
 function validarCampo(campo) {
-
-    /*
-        Limpa erros personalizados antes
-        de recalcular a validade.
-    */
     campo.setCustomValidity("");
 
-
-    /*
-        Data de nascimento não pode estar
-        no futuro.
-    */
-    if (
-        campo.id === "data-nascimento" &&
-        campo.value
-    ) {
-
-        const dataNascimento =
-            new Date(
-                `${campo.value}T00:00:00`
-            );
-
-
-        const hoje =
-            new Date();
-
+    if (campo.id === "data-nascimento" && campo.value) {
+        const dataNascimento = new Date(
+            `${campo.value}T00:00:00`
+        );
+        const hoje = new Date();
 
         hoje.setHours(0, 0, 0, 0);
 
-
-        if (
-            dataNascimento > hoje
-        ) {
-
+        if (dataNascimento > hoje) {
             campo.setCustomValidity(
                 "A data de nascimento não pode ser futura."
             );
         }
     }
 
-
-    /*
-        Validação básica do CPF.
-    */
-    if (
-        campo.id === "cpf" &&
-        campo.value
-    ) {
-
-        const cpfValido =
-            validarCPF(campo.value);
-
-
-        if (!cpfValido) {
-
-            campo.setCustomValidity(
-                "Digite um CPF válido."
-            );
+    if (campo.id === "cpf" && campo.value) {
+        if (!validarCPF(campo.value)) {
+            campo.setCustomValidity("Digite um CPF válido.");
         }
     }
 
+    const valido = campo.checkValidity();
 
-    const valido =
-        campo.checkValidity();
+    campo.classList.toggle("valido", valido);
+    campo.classList.toggle("invalido", !valido);
 
-
-    campo.classList.toggle(
-        "valido",
-        valido
+    const elementoErro = document.getElementById(
+        `erro-${campo.id}`
     );
-
-
-    campo.classList.toggle(
-        "invalido",
-        !valido
-    );
-
-
-    const mensagem =
-        obterMensagemErro(campo);
-
-
-    const elementoErro =
-        document.querySelector(
-            `#erro-${campo.id}`
-        );
-
 
     if (elementoErro) {
-
-        elementoErro.textContent =
-            mensagem;
+        elementoErro.textContent = obterMensagemErro(campo);
     }
-
 
     return valido;
 }
 
-
-/* =========================================
-   MENSAGENS DE ERRO
-========================================= */
-
 function obterMensagemErro(campo) {
+    const validade = campo.validity;
 
-    if (
-        campo.validity.customError
-    ) {
+    if (validade.customError) {
         return campo.validationMessage;
     }
 
-
-    if (
-        campo.validity.valueMissing
-    ) {
+    if (validade.valueMissing) {
         return "Este campo é obrigatório.";
     }
 
-
-    if (
-        campo.validity.typeMismatch
-    ) {
+    if (validade.typeMismatch || validade.badInput) {
         return "Digite um valor válido.";
     }
 
-
-    if (
-        campo.validity.tooShort
-    ) {
+    if (validade.tooShort) {
         return `Digite pelo menos ${campo.minLength} caracteres.`;
     }
 
-
-    if (
-        campo.validity.patternMismatch
-    ) {
+    if (validade.patternMismatch) {
         return "Digite no formato solicitado.";
     }
 
-
-    if (
-        campo.validity.badInput
-    ) {
-        return "Digite um valor válido.";
-    }
-
-
-    if (
-        campo.validity.rangeUnderflow ||
-        campo.validity.rangeOverflow
-    ) {
+    if (validade.rangeUnderflow || validade.rangeOverflow) {
         return "O valor informado está fora do limite permitido.";
     }
-
 
     return "";
 }
 
-
-/* =========================================
-   MÁSCARAS
-========================================= */
+/* MÁSCARAS */
 
 function aplicarMascara(campo) {
+    const mascaras = {
+        cpf: mascaraCPF,
+        telefone: mascaraTelefone,
+        cep: mascaraCEP
+    };
 
-    if (campo.id === "cpf") {
+    const mascara = mascaras[campo.id];
 
-        campo.value =
-            mascaraCPF(
-                campo.value
-            );
-    }
-
-
-    if (campo.id === "telefone") {
-
-        campo.value =
-            mascaraTelefone(
-                campo.value
-            );
-    }
-
-
-    if (campo.id === "cep") {
-
-        campo.value =
-            mascaraCEP(
-                campo.value
-            );
+    if (mascara) {
+        campo.value = mascara(campo.value);
     }
 }
 
-
-/* =========================================
-   MÁSCARA CPF
-========================================= */
+/* CPF */
 
 function mascaraCPF(valor) {
+    const cpf = valor
+        .replace(/\D/g, "")
+        .substring(0, 11);
 
-    valor =
-        valor.replace(
-            /\D/g,
-            ""
+    if (cpf.length <= 3) {
+        return cpf;
+    }
+
+    if (cpf.length <= 6) {
+        return cpf.replace(
+            /(\d{3})(\d+)/,
+            "$1.$2"
         );
+    }
 
-
-    valor =
-        valor.substring(
-            0,
-            11
+    if (cpf.length <= 9) {
+        return cpf.replace(
+            /(\d{3})(\d{3})(\d+)/,
+            "$1.$2.$3"
         );
-
-
-    if (valor.length > 3) {
-
-        valor =
-            valor.replace(
-                /(\d{3})(\d)/,
-                "$1.$2"
-            );
     }
 
-
-    if (valor.length > 7) {
-
-        valor =
-            valor.replace(
-                /(\d{3})(\d)/,
-                "$1.$2"
-            );
-    }
-
-
-    if (valor.length > 11) {
-
-        valor =
-            valor.replace(
-                /(\d{3})(\d{1,2})$/,
-                "$1-$2"
-            );
-    }
-
-
-    return valor;
+    return cpf.replace(
+        /(\d{3})(\d{3})(\d{3})(\d{1,2})/,
+        "$1.$2.$3-$4"
+    );
 }
 
-
-/* =========================================
-   VALIDAÇÃO CPF
-========================================= */
-
 function validarCPF(valor) {
+    const cpf = valor.replace(/\D/g, "");
 
-    const cpf =
-        valor.replace(
-            /\D/g,
-            ""
-        );
-
-
-    if (cpf.length !== 11) {
-        return false;
-    }
-
-
-    /*
-        Rejeita CPFs formados por
-        números repetidos.
-    */
     if (
+        cpf.length !== 11 ||
         /^(\d)\1{10}$/.test(cpf)
     ) {
         return false;
     }
 
-
     let soma = 0;
 
-
-    for (
-        let i = 0;
-        i < 9;
-        i++
-    ) {
-
-        soma +=
-            Number(cpf[i]) *
-            (10 - i);
+    for (let i = 0; i < 9; i++) {
+        soma += Number(cpf[i]) * (10 - i);
     }
 
+    let resto = (soma * 10) % 11;
+    if (resto === 10) resto = 0;
 
-    let resto =
-        (soma * 10) % 11;
-
-
-    if (resto === 10) {
-        resto = 0;
-    }
-
-
-    if (
-        resto !==
-        Number(cpf[9])
-    ) {
+    if (resto !== Number(cpf[9])) {
         return false;
     }
 
-
     soma = 0;
 
-
-    for (
-        let i = 0;
-        i < 10;
-        i++
-    ) {
-
-        soma +=
-            Number(cpf[i]) *
-            (11 - i);
+    for (let i = 0; i < 10; i++) {
+        soma += Number(cpf[i]) * (11 - i);
     }
 
+    resto = (soma * 10) % 11;
+    if (resto === 10) resto = 0;
 
-    resto =
-        (soma * 10) % 11;
-
-
-    if (resto === 10) {
-        resto = 0;
-    }
-
-
-    return (
-        resto ===
-        Number(cpf[10])
-    );
+    return resto === Number(cpf[10]);
 }
 
-
-/* =========================================
-   MÁSCARA TELEFONE
-========================================= */
-
+/* TELEFONE */
 
 function mascaraTelefone(valor) {
-
-    valor = valor.replace(/\D/g, "");
-
-    valor = valor.substring(0, 11);
+    valor = valor
+        .replace(/\D/g, "")
+        .substring(0, 11);
 
     if (valor.length <= 2) {
         return valor;
@@ -568,30 +251,17 @@ function mascaraTelefone(valor) {
         "($1) $2-$3"
     );
 }
-/* =========================================
-   MÁSCARA CEP
-========================================= */
+
+/* CEP */
 
 function mascaraCEP(valor) {
-
-    valor =
-        valor.replace(
-            /\D/g,
-            ""
-        );
-
-
-    valor =
-        valor.substring(
-            0,
-            8
-        );
-
+    valor = valor
+        .replace(/\D/g, "")
+        .substring(0, 8);
 
     if (valor.length <= 5) {
         return valor;
     }
-
 
     return valor.replace(
         /(\d{5})(\d{1,3})/,
@@ -599,101 +269,49 @@ function mascaraCEP(valor) {
     );
 }
 
-
-/* =========================================
-   LIMPAR ESTADO DOS CAMPOS
-========================================= */
+/* LIMPEZA */
 
 function limparEstadoCampos(formulario) {
+    formulario
+        .querySelectorAll("input, select, textarea")
+        .forEach((campo) => {
+            campo.classList.remove("valido", "invalido");
+            campo.setCustomValidity("");
 
-    const campos =
-        formulario.querySelectorAll(
-            "input, select, textarea"
-        );
-
-
-    campos.forEach((campo) => {
-
-        campo.classList.remove(
-            "valido",
-            "invalido"
-        );
-
-
-        campo.setCustomValidity("");
-
-
-        const elementoErro =
-            document.querySelector(
-                `#erro-${campo.id}`
+            const elementoErro = document.getElementById(
+                `erro-${campo.id}`
             );
 
-
-        if (elementoErro) {
-            elementoErro.textContent = "";
-        }
-    });
+            if (elementoErro) {
+                elementoErro.textContent = "";
+            }
+        });
 }
 
-
-/* =========================================
-   MENSAGEM DO FORMULÁRIO
-========================================= */
-
-function mostrarMensagem(
-    texto,
-    tipo
-) {
-
-    const mensagem =
-        document.querySelector(
-            "#mensagem-formulario"
-        );
-
+function mostrarMensagem(texto, tipo) {
+    const mensagem = document.querySelector(
+        "#mensagem-formulario"
+    );
 
     if (!mensagem) {
         return;
     }
 
-
-    mensagem.textContent =
-        texto;
-
-
-    mensagem.className =
-        `alert ${tipo}`;
-
-
-    mensagem.setAttribute(
-        "role",
-        "alert"
-    );
+    mensagem.textContent = texto;
+    mensagem.className = `alert ${tipo}`;
+    mensagem.setAttribute("role", "alert");
 }
-
-
-/* =========================================
-   LIMPAR MENSAGEM
-========================================= */
 
 function limparMensagem() {
-
-    const mensagem =
-        document.querySelector(
-            "#mensagem-formulario"
-        );
-
+    const mensagem = document.querySelector(
+        "#mensagem-formulario"
+    );
 
     if (!mensagem) {
         return;
     }
 
-
     mensagem.textContent = "";
-
-    mensagem.className =
-        "alert";
-
-    mensagem.removeAttribute(
-        "role"
-    );
+    mensagem.className = "alert";
+    mensagem.removeAttribute("role");
 }
